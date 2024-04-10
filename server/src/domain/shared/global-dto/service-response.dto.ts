@@ -12,7 +12,7 @@ export class ServiceResponseDto<T> {
   data?: T;
 
   @ApiProperty()
-  message: string;
+  description: string;
 
   @ApiProperty()
   errors?: any;

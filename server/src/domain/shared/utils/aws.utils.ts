@@ -4,7 +4,7 @@ import {
 } from '../global-dto/cognito-config.dto';
 
 export class AWSutil {
-  public static cognito = {
+  public static readonly cognito = {
     config: (config: CognitoConfigDto): ResponseCognitoDto => {
       return {
         body: new URLSearchParams({
@@ -30,6 +30,4 @@ export class AWSutil {
       };
     },
   };
-
-  public static dynamo() {}
 }

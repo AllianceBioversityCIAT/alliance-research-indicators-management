@@ -17,11 +17,11 @@ export class GlobalExceptions implements ExceptionFilter {
     const request = ctx.getRequest();
 
     const status = exception?.status || HttpStatus.INTERNAL_SERVER_ERROR;
-    const message = exception?.name;
+    const description = exception?.name;
     const error = exception?.message;
 
     const res: ServerResponseDto<unknown> = {
-      message: message,
+      description: description,
       status: status,
       errors: error,
       timestamp: new Date().toISOString(),

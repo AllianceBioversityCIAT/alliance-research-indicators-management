@@ -13,7 +13,7 @@ async function bootstrap() {
     .setDescription('The Alliance research indicator management system API')
     .setVersion('1.0')
     .build();
-  const port: number = parseInt(env.PORT);
+  const port: number = parseInt(env.ARIM_PORT);
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   await app

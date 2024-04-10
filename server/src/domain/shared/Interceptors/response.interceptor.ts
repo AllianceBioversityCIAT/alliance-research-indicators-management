@@ -28,7 +28,7 @@ export class ResponseInterceptor implements NestInterceptor {
         let modifiedData: ServerResponseDto<unknown> = {
           data: [],
           status: HttpStatus.OK,
-          message: 'Unknown message',
+          description: 'Unknown message',
           errors: null,
           timestamp: new Date().toISOString(),
           path: request.url,
@@ -43,13 +43,13 @@ export class ResponseInterceptor implements NestInterceptor {
           modifiedData = {
             ...modifiedData,
             status: HttpStatus.INTERNAL_SERVER_ERROR,
-            message: res.name,
+            description: res.name,
             errors: res.message,
           };
         }
-        const message = `[${request.method}]: ${request.url} status: ${modifiedData.status} - By ${ip}`;
+        const description: string = `[${request.method}]: ${request.url} status: ${modifiedData.status} - By ${ip}`;
 
-        this.logBasedOnStatus(modifiedData.status, message, res?.stack);
+        this.logBasedOnStatus(modifiedData.status, description, res?.stack);
 
         response.status(modifiedData.status);
         return modifiedData;
@@ -81,14 +81,14 @@ export class ResponseInterceptor implements NestInterceptor {
     return (
       arg?.data !== undefined &&
       arg?.status !== undefined &&
-      arg?.message !== undefined
+      arg?.description !== undefined
     );
   }
 
   private isError(arg: any): arg is InternalServerErrorException {
     return (
       arg?.name !== undefined &&
-      arg?.message !== undefined &&
+      arg?.description !== undefined &&
       arg?.stack !== undefined
     );
   }
