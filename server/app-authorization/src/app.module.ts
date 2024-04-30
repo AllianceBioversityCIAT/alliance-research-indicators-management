@@ -7,11 +7,11 @@ import { env } from 'process';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import { GlobalExceptions } from './domain/shared/error-management/global.exception';
-import { AuthorizationModule } from './domain/authorization.module';
 import { LoggingInterceptor } from './domain/shared/Interceptors/logging.interceptor';
 import { ResponseInterceptor } from './domain/shared/Interceptors/response.interceptor';
 import { routes as mainRoutes } from './domain/routes/main.routes';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthorizationModule } from './domain/entities/authorization.module';
 
 @Module({
   imports: [

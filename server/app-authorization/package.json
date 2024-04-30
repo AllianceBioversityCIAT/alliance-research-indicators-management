@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "migration:empty": "npm run typeorm migration:create ./src/db/migrations/%npm_config_name%",
+    "migration:generate": "npm run typeorm migration:generate -- ./src/db/migrations/%npm_config_name% -d ./src/db/config/mysql/orm.config.ts",
+    "migration:revert": "npm run typeorm migration:revert -- -d ./src/db/config/mysql/orm.config.ts",
+    "migration:execute": "npm run typeorm migration:run -- -d ./src/db/config/mysql/orm.config.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.554.0",
@@ -32,6 +37,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
+    "cross-replace": "^0.2.0",
     "eslint": "^8.57.0",
     "lint": "^1.1.2",
     "mysql2": "^3.9.6",

@@ -1,7 +1,7 @@
 import { Routes, RouteTree } from '@nestjs/core';
-import { RolesModule } from '../roles/roles.module';
-import { UsersModule } from '../users/users.module';
-import { AuthorizationModule } from '../authorization.module';
+import { RolesModule } from '../entities/roles/roles.module';
+import { UsersModule } from '../entities/users/users.module';
+import { AuthorizationModule } from '../entities/authorization.module';
 
 const children: Routes = [
   { path: 'roles', module: RolesModule },

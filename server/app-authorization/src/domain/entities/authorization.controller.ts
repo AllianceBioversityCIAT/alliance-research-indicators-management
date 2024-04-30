@@ -1,8 +1,8 @@
 import { Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ResponseUtils } from './shared/utils/response.utils';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { ResponseUtils } from '../shared/utils/response.utils';
 
 @Controller()
 export class AuthorizationController {
