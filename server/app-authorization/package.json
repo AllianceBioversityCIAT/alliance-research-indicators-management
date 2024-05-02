@@ -37,6 +37,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
+    "activedirectory": "^0.7.2",
     "cross-replace": "^0.2.0",
     "eslint": "^8.57.0",
     "lint": "^1.1.2",

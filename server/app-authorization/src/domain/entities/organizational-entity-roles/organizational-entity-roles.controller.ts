@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { OrganizationalEntityRolesService } from './organizational-entity-roles.service';
 
-@Controller('organizational-entity-roles')
+@Controller()
 export class OrganizationalEntityRolesController {
   constructor(
     private readonly organizationalEntityRolesService: OrganizationalEntityRolesService,

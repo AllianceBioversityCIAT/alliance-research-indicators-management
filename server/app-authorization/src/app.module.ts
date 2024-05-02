@@ -33,16 +33,16 @@ import { AuthorizationModule } from './domain/entities/authorization.module';
   controllers: [AppController],
   providers: [
     {
-      provide: APP_FILTER,
-      useClass: GlobalExceptions,
-    },
-    {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptions,
     },
     AppService,
   ],

@@ -28,5 +28,17 @@ import { RoleFocusModule } from './role-focus/role-focus.module';
     PermissionsModule,
     RoleFocusModule,
   ],
+  exports: [
+    RolesModule,
+    UsersModule,
+    HttpModule,
+    OrganizationalEntitiesModule,
+    EntityTypesModule,
+    OrganizationalEntityRolesModule,
+    UserOrganizationalEntityRolesModule,
+    OrganizationalEntityRolePermissionsModule,
+    PermissionsModule,
+    RoleFocusModule,
+  ],
 })
 export class AuthorizationModule {}
