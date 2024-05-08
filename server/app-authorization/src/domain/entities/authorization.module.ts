@@ -12,6 +12,8 @@ import { OrganizationalEntityRolePermissionsModule } from './organizational-enti
 import { PermissionsModule } from './permissions/permissions.module';
 import { CognitoStrategy } from '../tools/AWS/cognito.strategy';
 import { RoleFocusModule } from './role-focus/role-focus.module';
+import { JwtModule } from '@nestjs/jwt';
+import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
 
 @Module({
   controllers: [AuthorizationController],
@@ -27,18 +29,12 @@ import { RoleFocusModule } from './role-focus/role-focus.module';
     OrganizationalEntityRolePermissionsModule,
     PermissionsModule,
     RoleFocusModule,
+    JwtModule.register({
+      secret: process.env.ARIM_JWT_SECRET,
+      signOptions: { expiresIn: process.env.ARIM_JWT_ACCESS_EXPIRES_IN },
+    }),
+    RefreshTokensModule,
   ],
-  exports: [
-    RolesModule,
-    UsersModule,
-    HttpModule,
-    OrganizationalEntitiesModule,
-    EntityTypesModule,
-    OrganizationalEntityRolesModule,
-    UserOrganizationalEntityRolesModule,
-    OrganizationalEntityRolePermissionsModule,
-    PermissionsModule,
-    RoleFocusModule,
-  ],
+  exports: [],
 })
 export class AuthorizationModule {}

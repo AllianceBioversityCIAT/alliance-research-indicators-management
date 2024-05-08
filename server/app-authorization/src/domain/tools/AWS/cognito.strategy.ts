@@ -131,7 +131,7 @@ export class CognitoStrategy extends PassportStrategy(Strategy, 'cognito') {
         )
         .pipe(
           map((res: { data: CognitoProfileDto }) => {
-            if (res?.data) {
+            if (!res?.data) {
               throw new UnauthorizedException(
                 ExceptionMessage.AWS_AUTHORIZATION_CODE,
               );

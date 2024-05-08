@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
 import { UserOrganizationalEntityRole } from '../../user-organizational-entity-roles/entities/user-organizational-entity-role.entity';
+import { RefreshToken } from '../../refresh-tokens/entities/refresh-token.entity';
 
 @Entity('sec_users')
 export class User extends AuditableEntity {
@@ -36,4 +37,7 @@ export class User extends AuditableEntity {
     (userOrganizationalEntityRole) => userOrganizationalEntityRole.user,
   )
   user_organizational_entity_roles: UserOrganizationalEntityRole[];
+
+  @OneToMany(() => RefreshToken, (rt) => rt.user)
+  refresh_tokens: RefreshToken[];
 }

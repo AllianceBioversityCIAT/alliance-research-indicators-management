@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DynamoDBModule } from './db/config/dynamo/dynamo.module';
@@ -12,6 +12,7 @@ import { ResponseInterceptor } from './domain/shared/Interceptors/response.inter
 import { routes as mainRoutes } from './domain/routes/main.routes';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorizationModule } from './domain/entities/authorization.module';
+import { JwtMiddleware } from './domain/shared/middlewares/jwr.middleware';
 
 @Module({
   imports: [
@@ -47,4 +48,8 @@ import { AuthorizationModule } from './domain/entities/authorization.module';
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware);
+  }
+}
