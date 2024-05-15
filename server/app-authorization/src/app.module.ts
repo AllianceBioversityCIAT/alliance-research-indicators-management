@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DynamoDBModule } from './db/config/dynamo/dynamo.module';
-import { dataSourceOptions } from './db/config/mysql/orm.config';
+import { getDataSource } from './db/config/mysql/orm.config';
 import { env } from 'process';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
@@ -13,6 +13,8 @@ import { routes as mainRoutes } from './domain/routes/main.routes';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorizationModule } from './domain/entities/authorization.module';
 import { JwtMiddleware } from './domain/shared/middlewares/jwr.middleware';
+import { dataSourceTarget } from './db/config/mysql/enum/data-source-target.enum';
+import { DataSourceOptions } from 'typeorm';
 
 @Module({
   imports: [
@@ -23,7 +25,9 @@ import { JwtMiddleware } from './domain/shared/middlewares/jwr.middleware';
         secretAccessKey: env.ARIM_DYNAMO_SECRET_ACCESS_KEY,
       },
     }),
-    TypeOrmModule.forRoot(dataSourceOptions),
+    TypeOrmModule.forRoot(
+      <DataSourceOptions>getDataSource(dataSourceTarget.CORE, false),
+    ),
     RouterModule.register(mainRoutes),
     ConfigModule.forRoot({
       envFilePath: '.env',

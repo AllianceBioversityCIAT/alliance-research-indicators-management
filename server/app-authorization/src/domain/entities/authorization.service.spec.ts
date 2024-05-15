@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorizationService } from './authorization.service';
-import { User } from './users/entities/user.entity';
-import { RefreshToken } from './refresh-tokens/entities/refresh-token.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
-import { DataSource, Repository } from 'typeorm';
+import { DataSourceOptions } from 'typeorm';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+import { getDataSource } from '../../db/config/mysql/orm.config';
+import { dataSourceTarget } from '../../db/config/mysql/enum/data-source-target.enum';
+import { HttpStatus, UnauthorizedException } from '@nestjs/common';
 
 describe('AuthorizationService', () => {
   let service: AuthorizationService;
-  let userRepository: Repository<User>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -19,51 +19,17 @@ describe('AuthorizationService', () => {
           secret: 'secretkey',
           signOptions: { expiresIn: '1d' },
         }),
+        ConfigModule.forRoot({
+          envFilePath: '.env',
+          isGlobal: true,
+        }),
+        TypeOrmModule.forRoot(
+          <DataSourceOptions>getDataSource(dataSourceTarget.TEST, false),
+        ),
       ],
-      providers: [
-        AuthorizationService,
-        { provide: ConfigService, useValue: {} },
-        {
-          provide: DataSource,
-          useValue: {
-            transaction: jest.fn().mockImplementation((cb) =>
-              cb({
-                getRepository: jest.fn().mockReturnValue(userRepository),
-              }),
-            ),
-            getRepository: jest.fn().mockReturnValue({
-              findOne: jest.fn().mockResolvedValue({
-                sec_user_id: 1,
-                first_name: 'Test',
-                last_name: 'Test',
-                email: 'test@test.com',
-              }),
-              save: jest.fn().mockResolvedValue({}),
-            }),
-          },
-        },
-        {
-          provide: getRepositoryToken(User),
-          useClass: Repository,
-          useValue: {
-            findOne: jest.fn().mockResolvedValue({
-              sec_user_id: 1,
-              first_name: 'Test',
-              last_name: 'Test',
-              email: 'test@test.com',
-            }),
-          },
-        },
-        { provide: RefreshTokensService, useValue: {} },
-        {
-          provide: getRepositoryToken(RefreshToken),
-          useClass: Repository,
-        },
-      ],
+      providers: [AuthorizationService, RefreshTokensService],
     }).compile();
-
     service = module.get<AuthorizationService>(AuthorizationService);
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   it('should be defined', () => {
@@ -86,6 +52,26 @@ describe('AuthorizationService', () => {
       const result = await service.login(profileData);
       expect(result.data.access_token).toBeDefined();
       expect(typeof result.data.access_token).toBe('string');
+      expect(typeof result.data.refresh_token).toBe('string');
+      expect(result.description).toBe('User logged is successfully');
+      expect(result.status).toBe(HttpStatus.OK);
+    });
+  });
+
+  describe('', () => {
+    it('login when user is not found', async () => {
+      const profileData: CognitoProfileDto = {
+        email: 'test.wrong@test.com',
+        email_verified: 'true',
+        family_name: 'Wrong',
+        given_name: 'Test',
+        sub: '',
+        identities: '',
+        name: 'test',
+        username: 'test.wrong@test.com',
+      };
+      const result = service.login(profileData);
+      expect(result).rejects.toThrow(UnauthorizedException);
     });
   });
 });
