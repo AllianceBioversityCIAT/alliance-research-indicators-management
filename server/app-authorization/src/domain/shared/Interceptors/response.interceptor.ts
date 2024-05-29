@@ -58,6 +58,12 @@ export class ResponseInterceptor implements NestInterceptor {
   }
 
   private logBasedOnStatus(status: HttpStatus, message: string, error?: any) {
+    console.log(
+      !ENV.IS_PRODUCTION &&
+        ENV.SEE_ALL_LOGS &&
+        status >= HttpStatus.OK &&
+        status < HttpStatus.AMBIGUOUS,
+    );
     if (
       status >= HttpStatus.AMBIGUOUS &&
       status < HttpStatus.INTERNAL_SERVER_ERROR

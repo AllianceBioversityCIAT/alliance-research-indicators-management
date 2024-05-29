@@ -1,33 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthorizationService } from './authorization.service';
-import { JwtModule } from '@nestjs/jwt';
-import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
-import { DataSourceOptions } from 'typeorm';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { ConfigModule } from '@nestjs/config';
-import { getDataSource } from '../../db/config/mysql/orm.config';
-import { dataSourceTarget } from '../../db/config/mysql/enum/data-source-target.enum';
 import { HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { OrmConfigTestModule } from '../../db/config/mysql/orm-connection-test.module';
+import { AuthorizationModule } from './authorization.module';
 
 describe('AuthorizationService', () => {
   let service: AuthorizationService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        JwtModule.register({
-          secret: 'secretkey',
-          signOptions: { expiresIn: '1d' },
-        }),
         ConfigModule.forRoot({
           envFilePath: '.env',
           isGlobal: true,
         }),
-        TypeOrmModule.forRoot(
-          <DataSourceOptions>getDataSource(dataSourceTarget.TEST, false),
-        ),
+        OrmConfigTestModule,
+        AuthorizationModule,
       ],
-      providers: [AuthorizationService, RefreshTokensService],
+      providers: [],
     }).compile();
     service = module.get<AuthorizationService>(AuthorizationService);
   });

@@ -11,7 +11,7 @@ import { Strategy } from 'passport-custom';
 import { firstValueFrom, map } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { ExceptionMessage } from '../../shared/enums/exception-message.enum';
-import { AWSutil } from '../../shared/utils/aws.utils';
+import { AWSutil } from './utils/aws.utils';
 import { ResponseCognitoDto } from '../../shared/global-dto/cognito-config.dto';
 import { CognitoProfileDto } from '../../shared/global-dto/cognito-profile.dto';
 

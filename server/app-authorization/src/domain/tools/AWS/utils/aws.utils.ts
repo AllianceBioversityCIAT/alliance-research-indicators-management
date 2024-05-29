@@ -1,7 +1,7 @@
 import {
   CognitoConfigDto,
   ResponseCognitoDto,
-} from '../global-dto/cognito-config.dto';
+} from '../../../shared/global-dto/cognito-config.dto';
 
 export class AWSutil {
   public static readonly cognito = {
