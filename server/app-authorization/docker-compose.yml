@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  dev:
+    env_file:
+      - .env
+    container_name: research_indicatiors_server_management_authorization
+    image: research_indicatiors_management_authorization_server:1.0.0
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start
+    ports:
+      - 3002:3002
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
