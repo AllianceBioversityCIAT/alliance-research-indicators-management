@@ -1,6 +1,6 @@
 {
   "name": "app-authorization",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "author": "",
   "private": true,
@@ -23,6 +23,14 @@
     "migration:generate": "cross-replace npm run typeorm migration:generate -- ./src/db/migrations/${npm_config_name} -d ./src/db/config/mysql/orm.config.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/db/config/mysql/orm.config.ts",
     "migration:execute": "npm run typeorm migration:run -- -d ./src/db/config/mysql/orm.config.ts",
+    "docker:build": "docker build -t research_indicators_server_management_authorization .",
+    "docker:tag": "docker tag research_indicators_server_management_authorization research_indicators_server_management_authorization:$npm_package_version",
+    "docker:test": "docker run --env-file ./.env research_indicators_server_management_authorization npm run test",
+    "docker:lint": "docker run --env-file ./.env research_indicators_server_management_authorization npm run lint",
+    "docker:run": "docker run --env-file ./.env -dti --name research_indicators_management_authorization_app -p 3001:3001 research_indicators_server_management_authorization",
+    "docker:stop": "docker stop research_indicators_management_authorization_app && docker rm research_indicators_server_management_authorization",
+    "docker:logs": "docker logs research_indicators_management_authorization_app",
+    "docker:exec": "docker exec -it research_indicators_management_authorization_app /bin/bash",
     "compose:up:dev": "docker-compose up dev -d",
     "compose:up:prod": "docker-compose up prod -d"
   },

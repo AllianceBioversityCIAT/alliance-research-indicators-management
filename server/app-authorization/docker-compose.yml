@@ -4,8 +4,8 @@ services:
   dev:
     env_file:
       - .env
-    container_name: research_indicatiors_server_management_authorization
-    image: research_indicatiors_management_authorization_server:1.0.0
+    container_name: research_indicators_server_management_authorization
+    image: research_indicators_management_authorization_server:1.0.0
     build:
       context: .
       target: development
