@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
-import { UserOrganizationalEntityRole } from '../../user-organizational-entity-roles/entities/user-organizational-entity-role.entity';
 import { RefreshToken } from '../../refresh-tokens/entities/refresh-token.entity';
+import { UserRole } from '../../user_roles/entities/user_role.entity';
 
 @Entity('sec_users')
 export class User extends AuditableEntity {
@@ -32,12 +32,9 @@ export class User extends AuditableEntity {
   })
   email: string;
 
-  @OneToMany(
-    () => UserOrganizationalEntityRole,
-    (userOrganizationalEntityRole) => userOrganizationalEntityRole.user,
-  )
-  user_organizational_entity_roles: UserOrganizationalEntityRole[];
-
   @OneToMany(() => RefreshToken, (rt) => rt.user)
   refresh_tokens: RefreshToken[];
+
+  @OneToMany(() => UserRole, (userRole) => userRole.user)
+  user_role_list: UserRole[];
 }

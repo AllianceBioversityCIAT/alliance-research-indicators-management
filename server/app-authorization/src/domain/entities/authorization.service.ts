@@ -4,7 +4,6 @@ import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { User } from './users/entities/user.entity';
 import { ServiceResponseDto } from '../shared/global-dto/service-response.dto';
 import { ResponseUtils } from '../shared/utils/response.utils';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
   AccessTokenDto,
@@ -19,7 +18,6 @@ import { ENV } from '../shared/utils/env.utils';
 export class AuthorizationService {
   constructor(
     private readonly dataSource: DataSource,
-    private readonly _configService: ConfigService,
     private readonly _jwt: JwtService,
     private readonly _refreshTokenService: RefreshTokensService,
   ) {}

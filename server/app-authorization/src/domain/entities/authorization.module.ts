@@ -5,15 +5,16 @@ import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
 import { HttpModule } from '@nestjs/axios';
 import { OrganizationalEntitiesModule } from './organizational-entities/organizational-entities.module';
-import { OrganizationalEntityRolesModule } from './organizational-entity-roles/organizational-entity-roles.module';
 import { EntityTypesModule } from './entity-types/entity-types.module';
-import { UserOrganizationalEntityRolesModule } from './user-organizational-entity-roles/user-organizational-entity-roles.module';
-import { OrganizationalEntityRolePermissionsModule } from './organizational-entity-role-permissions/organizational-entity-role-permissions.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { CognitoStrategy } from '../tools/AWS/cognito.strategy';
 import { RoleFocusModule } from './role-focus/role-focus.module';
 import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
+import { ViewConfigurationsModule } from './view-configurations/view-configurations.module';
+import { ViewComponentsModule } from './view_components/view_components.module';
+import { ComponentTypesModule } from './component-types/component-types.module';
+import { UserRolesModule } from './user_roles/user_roles.module';
 
 @Module({
   controllers: [AuthorizationController],
@@ -24,9 +25,6 @@ import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
     HttpModule,
     OrganizationalEntitiesModule,
     EntityTypesModule,
-    OrganizationalEntityRolesModule,
-    UserOrganizationalEntityRolesModule,
-    OrganizationalEntityRolePermissionsModule,
     PermissionsModule,
     RoleFocusModule,
     JwtModule.register({
@@ -34,6 +32,10 @@ import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
       signOptions: { expiresIn: process.env.ARIM_JWT_ACCESS_EXPIRES_IN },
     }),
     RefreshTokensModule,
+    ViewConfigurationsModule,
+    ViewComponentsModule,
+    ComponentTypesModule,
+    UserRolesModule,
   ],
   exports: [],
 })

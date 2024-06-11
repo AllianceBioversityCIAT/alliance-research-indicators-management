@@ -25,6 +25,7 @@ async function bootstrap() {
     .listen(port)
     .then(() => {
       logger.debug(`Application is running http://localhost:${port}`);
+      logger.debug(`Documentation is running http://localhost:${port}/api`);
     })
     .catch((err) => {
       const portValue: number | string = port || '<Not defined>';

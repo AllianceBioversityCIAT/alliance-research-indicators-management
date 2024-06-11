@@ -1,12 +1,13 @@
 import { Controller, Post, UseGuards, Headers } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SearchRequest } from '../shared/decorators/search-request.decorator';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { ServiceResponseDto } from '../shared/global-dto/service-response.dto';
 import { ResponseAccessTokenDto } from '../shared/global-dto/payload.dto';
 
+@ApiTags('Authorization')
 @Controller()
 export class AuthorizationController {
   constructor(private readonly authorizationService: AuthorizationService) {}
