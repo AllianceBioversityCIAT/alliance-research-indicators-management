@@ -37,7 +37,9 @@ export class RoleFunctionalPermission extends AuditableEntity {
   })
   write!: boolean;
 
-  @ManyToOne(() => Role, (role) => role.role_functional_permission_list)
+  @ManyToOne(() => Role, (role) => role.role_functional_permission_list, {
+    eager: true,
+  })
   @JoinColumn({ name: 'role_id' })
   role: Role;
 

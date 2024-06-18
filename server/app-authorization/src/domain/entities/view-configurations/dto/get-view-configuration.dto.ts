@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { RoleFunctionalPermission } from '../../role_functional_permissions/entities/role_functional_permission.entity';
 
-export class CreateViewConfigurationDto {
+export class GetViewConfigurationDto {
   @ApiProperty()
   sec_view_configuration_code?: string;
   @ApiProperty()
@@ -10,7 +11,7 @@ export class CreateViewConfigurationDto {
   @ApiProperty()
   public description: string;
   @ApiProperty()
-  public roles: SaveRoles[];
+  public roles: RoleFunctionalPermission[];
   @ApiProperty()
   public configurations: any;
   @ApiProperty()
@@ -19,19 +20,8 @@ export class CreateViewConfigurationDto {
   public hidden: boolean;
   @ApiProperty()
   public parent_code?: string;
-  @ApiProperty({ isArray: true, type: CreateViewConfigurationDto })
-  public children: CreateViewConfigurationDto[];
+  @ApiProperty({ isArray: true, type: GetViewConfigurationDto })
+  public children: GetViewConfigurationDto[];
   @ApiProperty()
   public is_active: boolean;
-}
-
-export class SaveRoles {
-  @ApiProperty()
-  role_id: number;
-  @ApiProperty()
-  write: boolean;
-  @ApiProperty()
-  name: string;
-  @ApiProperty()
-  is_active?: boolean;
 }

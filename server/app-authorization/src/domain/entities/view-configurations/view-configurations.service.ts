@@ -12,6 +12,7 @@ import { ServiceResponseDto } from '../../shared/global-dto/service-response.dto
 import { CreateViewConfigurationDto } from './dto/create-view-configuration.dto';
 import { CreateRoleFunctionalPermissionDto } from '../role_functional_permissions/dto/create-role_functional_permission.dto';
 import { RoleFunctionalPermissionsService } from '../role_functional_permissions/role_functional_permissions.service';
+import { GetViewConfigurationDto } from './dto/get-view-configuration.dto';
 
 @Injectable()
 export class ViewConfigurationsService {
@@ -56,7 +57,7 @@ export class ViewConfigurationsService {
       });
 
     const trees = nodeTrees.map((node) =>
-      mapTree<ViewConfiguration, CreateViewConfigurationDto>(node, {
+      mapTree<ViewConfiguration, GetViewConfigurationDto>(node, {
         role_functional_permission_list: 'roles',
         sec_view_configuration_code: 'sec_view_configuration_code',
         component_code: 'component_code',
@@ -70,10 +71,14 @@ export class ViewConfigurationsService {
       }),
     );
 
+    const treeResponse = trees.map((tree) =>
+      this._roleFunctionalPermissionsService._mapRoleFunctionalPermission(tree),
+    );
+
     return ResponseUtils.format({
       status: HttpStatus.OK,
       description: `View Components found successfully`,
-      data: trees,
+      data: treeResponse,
     });
   }
 

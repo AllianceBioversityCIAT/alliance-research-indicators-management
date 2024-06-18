@@ -42,11 +42,11 @@ export const mapTree = <
   Echema extends TreeDto<Echema>,
   ReturnData extends { children?: ReturnData[] },
 >(
-  echema: Echema,
+  schema: Echema,
   maping: MapToKeyof<Echema, ReturnData>,
 ): ReturnData => {
-  const mappedNode = mappingOBJ<Echema, ReturnData>(echema, maping);
-  mappedNode.children = echema.children.map((child) => mapTree(child, maping));
+  const mappedNode = mappingOBJ<Echema, ReturnData>(schema, maping);
+  mappedNode.children = schema.children.map((child) => mapTree(child, maping));
 
   return mappedNode;
 };
