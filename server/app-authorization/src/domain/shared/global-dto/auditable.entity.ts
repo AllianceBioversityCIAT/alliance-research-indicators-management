@@ -38,7 +38,7 @@ export abstract class AuditableEntity {
     type: 'boolean',
     nullable: false,
     default: true,
-    select: false,
+    select: true,
   })
   is_active: boolean;
 }

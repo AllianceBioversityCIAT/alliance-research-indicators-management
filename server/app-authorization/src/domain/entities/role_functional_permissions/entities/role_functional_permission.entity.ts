@@ -24,10 +24,18 @@ export class RoleFunctionalPermission extends AuditableEntity {
   role_id!: number;
 
   @Column({
-    name: 'view_configuration_id',
-    type: 'bigint',
+    name: 'view_configuration_code',
+    type: 'varchar',
+    length: 36,
   })
-  view_configuration_id!: number;
+  view_configuration_code!: string;
+
+  @Column({
+    name: 'write',
+    type: 'boolean',
+    default: false,
+  })
+  write!: boolean;
 
   @ManyToOne(() => Role, (role) => role.role_functional_permission_list)
   @JoinColumn({ name: 'role_id' })
@@ -37,6 +45,6 @@ export class RoleFunctionalPermission extends AuditableEntity {
     () => ViewConfiguration,
     (viewConfiguration) => viewConfiguration.role_functional_permission_list,
   )
-  @JoinColumn({ name: 'view_configuration_id' })
+  @JoinColumn({ name: 'view_configuration_code' })
   view_configuration: ViewConfiguration;
 }

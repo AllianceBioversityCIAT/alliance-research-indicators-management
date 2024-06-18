@@ -5,5 +5,6 @@ import { RoleFunctionalPermissionsController } from './role_functional_permissio
 @Module({
   controllers: [RoleFunctionalPermissionsController],
   providers: [RoleFunctionalPermissionsService],
+  exports: [RoleFunctionalPermissionsService],
 })
 export class RoleFunctionalPermissionsModule {}

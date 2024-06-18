@@ -22,6 +22,7 @@ export class ViewComponent extends AuditableEntity {
   @ManyToOne(
     () => ComponentType,
     (componentType) => componentType.sec_component_type_id,
+    { eager: true },
   )
   @JoinColumn({ name: 'component_type_id' })
   component_type: ComponentType;

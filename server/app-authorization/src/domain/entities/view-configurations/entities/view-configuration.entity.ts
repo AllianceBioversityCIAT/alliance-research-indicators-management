@@ -4,7 +4,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
   TreeParent,
@@ -16,11 +15,13 @@ import { RoleFunctionalPermission } from '../../role_functional_permissions/enti
 @Entity('sec_view_configurations')
 @Tree('closure-table')
 export class ViewConfiguration extends AuditableEntity {
-  @PrimaryGeneratedColumn({
-    name: 'sec_view_configuration_id',
-    type: 'bigint',
+  @Column({
+    name: 'sec_view_configuration_code',
+    type: 'varchar',
+    length: 36,
+    primary: true,
   })
-  sec_view_configuration_id!: number;
+  sec_view_configuration_code!: string;
 
   @Column({
     name: 'component_code',
@@ -64,21 +65,28 @@ export class ViewConfiguration extends AuditableEntity {
   hidden!: boolean;
 
   @Column({
-    name: 'parent_id',
-    type: 'bigint',
+    name: 'parent_code',
+    type: 'varchar',
+    length: 36,
     nullable: true,
   })
-  parent_id?: number;
+  parent_code?: string;
 
-  @ManyToOne(() => ViewComponent, (vc) => vc.view_configuration_list)
+  @ManyToOne(() => ViewComponent, (vc) => vc.view_configuration_list, {
+    eager: true,
+  })
   @JoinColumn({ name: 'component_code' })
   component: ViewComponent;
 
+  /*@ManyToOne(() => ViewConfiguration, (vc) => vc.children)
+  @JoinColumn({ name: 'parent_code' })*/
   @TreeParent()
-  @JoinColumn({ name: 'parent_id' })
   parent: ViewConfiguration;
 
-  @TreeChildren()
+  /*@OneToMany(() => ViewConfiguration, (vc) => vc.parent, {
+    cascade: true,
+  })*/
+  @TreeChildren({ cascade: true })
   children: ViewConfiguration[];
 
   @OneToMany(() => RoleFunctionalPermission, (rfp) => rfp.view_configuration)

@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { User } from './users/entities/user.entity';
 import { ServiceResponseDto } from '../shared/global-dto/service-response.dto';
@@ -25,21 +25,31 @@ export class AuthorizationService {
   login(
     profileData: CognitoProfileDto,
   ): Promise<ServiceResponseDto<ResponseAccessTokenDto>> {
-    const email: string = profileData.email?.trim();
-    const access: Promise<AccessTokenDto> = this.dataSource
-      .getRepository(User)
+    const email: string = profileData.email?.trim().toLocaleLowerCase();
+    const isCgir: boolean = email.includes('@cgiar.org');
+    const userRepo: Repository<User> = this.dataSource.getRepository(User);
+    const access: Promise<AccessTokenDto> = userRepo
       .findOne({
         where: {
           email: email,
           is_active: true,
         },
       })
-      .then((user: User) => {
-        if (user) {
-          const accessToken: string = this.generateToken(user);
+      .then(async (user: User) => {
+        let tempUser: User = user;
+        if (!tempUser && isCgir) {
+          tempUser = await userRepo.save({
+            email: email,
+            first_name: profileData.given_name,
+            last_name: profileData.family_name,
+          });
+        }
+
+        if (tempUser) {
+          const accessToken: string = this.generateToken(tempUser);
           const tokenObj: AccessTokenDto = new AccessTokenDto(
             accessToken,
-            user,
+            tempUser,
           );
           return tokenObj;
         }
