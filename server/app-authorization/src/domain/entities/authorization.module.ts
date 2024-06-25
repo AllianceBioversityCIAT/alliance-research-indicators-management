@@ -6,7 +6,7 @@ import { UsersModule } from './users/users.module';
 import { HttpModule } from '@nestjs/axios';
 import { OrganizationalEntitiesModule } from './organizational-entities/organizational-entities.module';
 import { EntityTypesModule } from './entity-types/entity-types.module';
-import { PermissionsModule } from './permissions/permissions.module';
+import { EndpointPermissionsModule } from './endpoint-permissions/endpoint-permissions.module';
 import { CognitoStrategy } from '../tools/AWS/cognito.strategy';
 import { RoleFocusModule } from './role-focus/role-focus.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -15,6 +15,7 @@ import { ViewConfigurationsModule } from './view-configurations/view-configurati
 import { ViewComponentsModule } from './view_components/view_components.module';
 import { ComponentTypesModule } from './component-types/component-types.module';
 import { UserRolesModule } from './user_roles/user_roles.module';
+import { RoleEndpointPermissionsModule } from './role_endpoint_permissions/role_endpoint_permissions.module';
 
 @Module({
   controllers: [AuthorizationController],
@@ -25,7 +26,7 @@ import { UserRolesModule } from './user_roles/user_roles.module';
     HttpModule,
     OrganizationalEntitiesModule,
     EntityTypesModule,
-    PermissionsModule,
+    EndpointPermissionsModule,
     RoleFocusModule,
     JwtModule.register({
       secret: process.env.ARIM_JWT_SECRET,
@@ -36,6 +37,7 @@ import { UserRolesModule } from './user_roles/user_roles.module';
     ViewComponentsModule,
     ComponentTypesModule,
     UserRolesModule,
+    RoleEndpointPermissionsModule,
   ],
   exports: [],
 })

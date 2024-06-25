@@ -31,7 +31,7 @@ export class RoleFunctionalPermissionsService {
 
   _mapRoleFunctionalPermission(schema: GetViewConfigurationDto) {
     const mappedNode = schema as unknown as CreateViewConfigurationDto;
-    mappedNode.roles = schema.roles.map((role) => ({
+    mappedNode.roles = schema.roles?.map((role) => ({
       role_id: role.role_id,
       write: role.write,
       is_active: role?.is_active,

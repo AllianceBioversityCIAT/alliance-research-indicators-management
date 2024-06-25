@@ -10,6 +10,7 @@ import { AuditableControlListEntity } from '../../../shared/global-dto/auditable
 import { RoleFocus } from '../../role-focus/entities/role-focus.entity';
 import { RoleFunctionalPermission } from '../../role_functional_permissions/entities/role_functional_permission.entity';
 import { UserRole } from '../../user_roles/entities/user_role.entity';
+import { RoleEndpointPermission } from '../../role_endpoint_permissions/entities/role_endpoint_permission.entity';
 
 @Entity('sec_roles')
 export class Role extends AuditableControlListEntity {
@@ -44,4 +45,10 @@ export class Role extends AuditableControlListEntity {
 
   @OneToMany(() => UserRole, (userRole) => userRole.role)
   user_role_list: UserRole[];
+
+  @OneToMany(
+    () => RoleEndpointPermission,
+    (roleEndpointPermission) => roleEndpointPermission.role,
+  )
+  role_endpoint_permission_list: RoleEndpointPermission[];
 }

@@ -1,6 +1,4 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateComponentTypeDto } from './create-component-type.dto';
-
-export class UpdateComponentTypeDto extends PartialType(
-  CreateComponentTypeDto,
-) {}
+export class UpdateComponentTypeDto {
+  name: string;
+  is_active: boolean;
+}

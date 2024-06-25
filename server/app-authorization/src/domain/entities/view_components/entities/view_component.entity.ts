@@ -11,7 +11,7 @@ export class ViewComponent extends AuditableEntity {
     type: 'varchar',
     length: 100,
   })
-  sec_view_component_id!: number;
+  sec_view_component_id!: string;
 
   @Column({
     name: 'component_type_id',
@@ -25,8 +25,8 @@ export class ViewComponent extends AuditableEntity {
     { eager: true },
   )
   @JoinColumn({ name: 'component_type_id' })
-  component_type: ComponentType;
+  component_type?: ComponentType;
 
   @OneToMany(() => ViewConfiguration, (vc) => vc.component_code)
-  view_configuration_list: ViewConfiguration[];
+  view_configuration_list?: ViewConfiguration[];
 }

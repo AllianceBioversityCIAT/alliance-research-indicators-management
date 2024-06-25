@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { ViewConfiguration } from './entities/view-configuration.entity';
 import { ResponseUtils } from '../../shared/utils/response.utils';
 import {
@@ -21,26 +21,34 @@ export class ViewConfigurationsService {
     private readonly _roleFunctionalPermissionsService: RoleFunctionalPermissionsService,
   ) {}
 
-  async getSchemaBySection(
-    component_code: string,
-  ): Promise<ServiceResponseDto<ViewConfiguration>> {
+  async getSchemaByRootCode(
+    code: string,
+  ): Promise<ServiceResponseDto<CreateViewConfigurationDto>> {
     const parentNode: ViewConfiguration = await this.dataSource
       .getTreeRepository(ViewConfiguration)
       .findOne({
         where: {
-          component_code: component_code,
+          sec_view_configuration_code: code,
           is_active: true,
           component: { component_type_id: 1 },
+          parent_code: IsNull(),
         },
+        relations: ['component', 'role_functional_permission_list'],
       });
+
+    if (!parentNode) {
+      throw new NotFoundException(
+        `The view configuration with code ${code} was not found`,
+      );
+    }
 
     return this.dataSource
       .getTreeRepository(ViewConfiguration)
-      .findDescendantsTree(parentNode, { relations: ['component'] })
-      .then((descendants) =>
-        filterActiveDescendants<ViewConfiguration>(descendants),
-      )
-      .then((descendants: ViewConfiguration) =>
+      .findDescendantsTree(parentNode, {
+        relations: ['component', 'role_functional_permission_list'],
+      })
+      .then((descendants) => this._formatGetData(descendants))
+      .then((descendants: CreateViewConfigurationDto) =>
         ResponseUtils.format({
           status: HttpStatus.OK,
           description: `View Components found successfully`,
@@ -49,14 +57,22 @@ export class ViewConfigurationsService {
       );
   }
 
-  async getSchema(): Promise<ServiceResponseDto<CreateViewConfigurationDto[]>> {
-    const nodeTrees = await this.dataSource
-      .getTreeRepository(ViewConfiguration)
-      .findTrees({
-        relations: ['component', 'role_functional_permission_list'],
-      });
+  _formatGetData(
+    data: ViewConfiguration | ViewConfiguration[],
+  ): CreateViewConfigurationDto | CreateViewConfigurationDto[] {
+    const isArray: boolean = Array.isArray(data);
+    let tempData: ViewConfiguration[];
+    if (isArray) {
+      tempData = data as ViewConfiguration[];
+    } else {
+      tempData = [data as ViewConfiguration];
+    }
 
-    const trees = nodeTrees.map((node) =>
+    const onlyActive = filterActiveDescendants<ViewConfiguration>(
+      tempData,
+    ) as ViewConfiguration[];
+
+    const trees = onlyActive.map((node) =>
       mapTree<ViewConfiguration, GetViewConfigurationDto>(node, {
         role_functional_permission_list: 'roles',
         sec_view_configuration_code: 'sec_view_configuration_code',
@@ -74,6 +90,20 @@ export class ViewConfigurationsService {
     const treeResponse = trees.map((tree) =>
       this._roleFunctionalPermissionsService._mapRoleFunctionalPermission(tree),
     );
+
+    return isArray ? treeResponse : treeResponse[0];
+  }
+
+  async getSchema(): Promise<ServiceResponseDto<CreateViewConfigurationDto[]>> {
+    const nodeTrees = await this.dataSource
+      .getTreeRepository(ViewConfiguration)
+      .findTrees({
+        relations: ['component', 'role_functional_permission_list'],
+      });
+
+    const treeResponse = this._formatGetData(
+      nodeTrees,
+    ) as CreateViewConfigurationDto[];
 
     return ResponseUtils.format({
       status: HttpStatus.OK,

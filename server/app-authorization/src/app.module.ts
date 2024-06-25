@@ -1,11 +1,21 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DynamoDBModule } from './db/config/dynamo/dynamo.module';
 import { getDataSource } from './db/config/mysql/orm.config';
 import { env } from 'process';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
+import {
+  APP_FILTER,
+  APP_GUARD,
+  APP_INTERCEPTOR,
+  RouterModule,
+} from '@nestjs/core';
 import { GlobalExceptions } from './domain/shared/error-management/global.exception';
 import { LoggingInterceptor } from './domain/shared/Interceptors/logging.interceptor';
 import { ResponseInterceptor } from './domain/shared/Interceptors/response.interceptor';
@@ -15,9 +25,12 @@ import { AuthorizationModule } from './domain/entities/authorization.module';
 import { JwtMiddleware } from './domain/shared/middlewares/jwr.middleware';
 import { dataSourceTarget } from './db/config/mysql/enum/data-source-target.enum';
 import { DataSourceOptions } from 'typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { PermissionGuard } from './domain/shared/guards/permission.guard';
 
 @Module({
   imports: [
+    JwtModule,
     DynamoDBModule.forRoot({
       region: env.ARIM_DYNAMO_REGION,
       credentials: {
@@ -49,11 +62,44 @@ import { DataSourceOptions } from 'typeorm';
       provide: APP_FILTER,
       useClass: GlobalExceptions,
     },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
+    },
     AppService,
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware);
+    consumer.apply(JwtMiddleware).forRoutes(
+      {
+        path: 'api/',
+        method: RequestMethod.ALL,
+      },
+      {
+        path: 'api/authorization/user/*',
+        method: RequestMethod.ALL,
+      },
+      {
+        path: 'api/authorization/entity-types/*',
+        method: RequestMethod.ALL,
+      },
+      {
+        path: 'api/authorization/organizational/*',
+        method: RequestMethod.ALL,
+      },
+      {
+        path: 'api/authorization/endpoint-permissions/*',
+        method: RequestMethod.ALL,
+      },
+      {
+        path: 'api/authorization/role/*',
+        method: RequestMethod.ALL,
+      },
+      {
+        path: 'api/authorization/view/*',
+        method: RequestMethod.ALL,
+      },
+    );
   }
 }
