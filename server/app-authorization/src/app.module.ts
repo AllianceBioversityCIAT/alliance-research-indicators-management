@@ -27,6 +27,7 @@ import { dataSourceTarget } from './db/config/mysql/enum/data-source-target.enum
 import { DataSourceOptions } from 'typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PermissionGuard } from './domain/shared/guards/permission.guard';
+import { NotificationsModule } from './domain/sockets/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { PermissionGuard } from './domain/shared/guards/permission.guard';
       isGlobal: true,
     }),
     AuthorizationModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [
