@@ -8,8 +8,7 @@ import { EndpointPermissionsModule } from '../entities/endpoint-permissions/endp
 import { RoleFocusModule } from '../entities/role-focus/role-focus.module';
 import { UserRolesModule } from '../entities/user_roles/user_roles.module';
 import { RoleFunctionalPermissionsModule } from '../entities/role_functional_permissions/role_functional_permissions.module';
-import { ComponentTypesModule } from '../entities/component-types/component-types.module';
-import { ViewComponentsModule } from '../entities/view_components/view_components.module';
+import { ElementypesModule } from '../entities/element-types/element-types.module';
 import { ViewConfigurationsModule } from '../entities/view-configurations/view-configurations.module';
 import { RoleEndpointPermissionsModule } from '../entities/role_endpoint_permissions/role_endpoint_permissions.module';
 
@@ -27,8 +26,7 @@ const users: Routes = [{ path: 'roles', module: UserRolesModule }];
 
 const view: Routes = [
   { path: 'configurations', module: ViewConfigurationsModule },
-  { path: 'components', module: ViewComponentsModule },
-  { path: 'types', module: ComponentTypesModule },
+  { path: 'types', module: ElementypesModule },
 ];
 
 const children: Routes = [

@@ -18,7 +18,11 @@ export class RoleFunctionalPermissionsService {
         component.roles.map((el) => ({
           role_id: el.role_id,
           view_configuration_code: component.component_code,
-          write: el.write,
+          create: el.create,
+          read: el.read,
+          update: el.update,
+          delete: el.delete,
+          execute: el.execute,
           is_active: el?.is_active,
         })),
       )
@@ -33,7 +37,11 @@ export class RoleFunctionalPermissionsService {
     const mappedNode = schema as unknown as CreateViewConfigurationDto;
     mappedNode.roles = schema.roles?.map((role) => ({
       role_id: role.role_id,
-      write: role.write,
+      create: role.create,
+      read: role.read,
+      update: role.update,
+      delete: role.delete,
+      execute: role.execute,
       is_active: role?.is_active,
       name: role.role.name,
     }));

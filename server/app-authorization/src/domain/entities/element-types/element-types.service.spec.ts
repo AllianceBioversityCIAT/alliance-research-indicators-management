@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ComponentTypesService } from './component-types.service';
+import { ElementTypesService } from './element-types.service';
 import { OrmConfigTestModule } from '../../../db/config/mysql/orm-connection-test.module';
-import { ComponentTypesModule } from './component-types.module';
+import { ElementypesModule } from './element-types.module';
 
 describe('ComponentTypesService', () => {
-  let service: ComponentTypesService;
+  let service: ElementTypesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [OrmConfigTestModule, ComponentTypesModule],
+      imports: [OrmConfigTestModule, ElementypesModule],
     }).compile();
 
-    service = module.get<ComponentTypesService>(ComponentTypesService);
+    service = module.get<ElementTypesService>(ElementTypesService);
   });
 
   it('should be defined', () => {

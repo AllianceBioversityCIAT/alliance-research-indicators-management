@@ -3,7 +3,7 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { CognitoStrategy } from './cognito.strategy';
 import { Observable, of, throwError } from 'rxjs';
-import { CognitoProfileDto } from '../../shared/global-dto/cognito-profile.dto';
+import { CognitoProfileDto } from '../../../shared/global-dto/cognito-profile.dto';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 
 describe('CognitoStrategy', () => {

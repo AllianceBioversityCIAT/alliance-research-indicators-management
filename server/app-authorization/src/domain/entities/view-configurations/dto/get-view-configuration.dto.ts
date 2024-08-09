@@ -5,21 +5,9 @@ export class GetViewConfigurationDto {
   @ApiProperty()
   sec_view_configuration_code?: string;
   @ApiProperty()
-  public component_code: string;
-  @ApiProperty()
-  public title: string;
-  @ApiProperty()
-  public description: string;
+  public client_element_code: string;
   @ApiProperty()
   public roles: RoleFunctionalPermission[];
-  @ApiProperty()
-  public configurations: any;
-  @ApiProperty()
-  public position: number;
-  @ApiProperty()
-  public hidden: boolean;
-  @ApiProperty()
-  public parent_code?: string;
   @ApiProperty({ isArray: true, type: GetViewConfigurationDto })
   public children: GetViewConfigurationDto[];
   @ApiProperty()

@@ -1,24 +1,24 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { ComponentTypesService } from './component-types.service';
+import { ElementTypesService } from './element-types.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateComponentTypeDto } from './dto/create-component-type.dto';
 import { UpdateComponentTypeDto } from './dto/update-component-type.dto';
 
 @ApiTags('Component Types')
 @Controller()
-export class ComponentTypesController {
-  constructor(private readonly componentTypesService: ComponentTypesService) {}
+export class ElementTypeTypesController {
+  constructor(private readonly elementTypesService: ElementTypesService) {}
 
   @ApiBearerAuth()
   @Get('all')
   findAll() {
-    return this.componentTypesService.findAll();
+    return this.elementTypesService.findAll();
   }
 
   @ApiBearerAuth()
   @Post()
   create(@Body() createComponentTypeDto: CreateComponentTypeDto) {
-    return this.componentTypesService.create(createComponentTypeDto);
+    return this.elementTypesService.create(createComponentTypeDto);
   }
 
   @ApiBearerAuth()
@@ -27,6 +27,6 @@ export class ComponentTypesController {
     @Param('id') id: string,
     @Body() updateComponentTypeDto: UpdateComponentTypeDto,
   ) {
-    return this.componentTypesService.update(+id, updateComponentTypeDto);
+    return this.elementTypesService.update(+id, updateComponentTypeDto);
   }
 }

@@ -1,4 +1,11 @@
-import { Controller, Post, UseGuards, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Headers,
+  Get,
+  Param,
+} from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';

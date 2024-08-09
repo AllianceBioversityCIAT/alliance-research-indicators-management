@@ -8,6 +8,7 @@ import {
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { ViewConfiguration } from '../../view-configurations/entities/view-configuration.entity';
+import { PermissionStateEnum } from '../enum/permission-state.enum';
 
 @Entity('sec_role_functional_permissions')
 export class RoleFunctionalPermission extends AuditableEntity {
@@ -31,11 +32,44 @@ export class RoleFunctionalPermission extends AuditableEntity {
   view_configuration_code!: string;
 
   @Column({
-    name: 'write',
-    type: 'boolean',
-    default: false,
+    name: 'create',
+    type: 'enum',
+    enum: PermissionStateEnum,
+    default: PermissionStateEnum.DISABLED,
   })
-  write!: boolean;
+  create!: PermissionStateEnum;
+
+  @Column({
+    name: 'read',
+    type: 'enum',
+    enum: PermissionStateEnum,
+    default: PermissionStateEnum.DISABLED,
+  })
+  read!: PermissionStateEnum;
+
+  @Column({
+    name: 'update',
+    type: 'enum',
+    enum: PermissionStateEnum,
+    default: PermissionStateEnum.DISABLED,
+  })
+  update!: PermissionStateEnum;
+
+  @Column({
+    name: 'delete',
+    type: 'enum',
+    enum: PermissionStateEnum,
+    default: PermissionStateEnum.DISABLED,
+  })
+  delete!: PermissionStateEnum;
+
+  @Column({
+    name: 'execute',
+    type: 'enum',
+    enum: PermissionStateEnum,
+    default: PermissionStateEnum.DISABLED,
+  })
+  execute!: PermissionStateEnum;
 
   @ManyToOne(() => Role, (role) => role.role_functional_permission_list, {
     eager: true,

@@ -31,10 +31,8 @@ describe('ViewConfigurations', () => {
       const result = await service.getSchema();
       expect(result).toBeDefined();
       if (result.data.length > 0) {
-        expect(result.data[0].component_code).toBeDefined();
-        expect(typeof result.data[0].component_code).toBe('string');
-        expect(result.data[0].title).toBeDefined();
-        expect(typeof result.data[0].title).toBe('string');
+        expect(result.data[0].client_element_code).toBeDefined();
+        expect(typeof result.data[0].client_element_code).toBe('string');
         expect(result.data[0].roles).toBeDefined();
         expect(typeof result.data[0].roles).toBe('object');
       }
@@ -46,10 +44,8 @@ describe('ViewConfigurations', () => {
       const code = '0244cb38-132b-4e31-a50e-3128fc71d5d5';
       const result = await service.getSchemaByRootCode(code);
       expect(result).toBeDefined();
-      expect(result.data.component_code).toBeDefined();
-      expect(typeof result.data.component_code).toBe('string');
-      expect(result.data.title).toBeDefined();
-      expect(typeof result.data.title).toBe('string');
+      expect(result.data.client_element_code).toBeDefined();
+      expect(typeof result.data.client_element_code).toBe('string');
       expect(result.data.roles).toBeDefined();
       expect(typeof result.data.roles).toBe('object');
     });

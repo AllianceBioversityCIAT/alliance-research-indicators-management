@@ -8,9 +8,9 @@ import {
   TreeChildren,
   TreeParent,
 } from 'typeorm';
-import { ViewComponent } from '../../view_components/entities/view_component.entity';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
 import { RoleFunctionalPermission } from '../../role_functional_permissions/entities/role_functional_permission.entity';
+import { ElementType } from '../../element-types/entities/element-type.entity';
 
 @Entity('sec_view_configurations')
 @Tree('closure-table')
@@ -24,68 +24,26 @@ export class ViewConfiguration extends AuditableEntity {
   sec_view_configuration_code!: string;
 
   @Column({
-    name: 'component_code',
+    name: 'client_element_code',
     type: 'varchar',
     length: 100,
   })
-  component_code!: string;
+  client_element_code!: string;
 
   @Column({
-    name: 'title',
-    type: 'text',
+    name: 'element_type_id',
+    type: 'bigint',
     nullable: true,
   })
-  title?: string;
+  element_type_id?: number;
 
-  @Column({
-    name: 'description',
-    type: 'text',
-    nullable: true,
-  })
-  description?: string;
+  @ManyToOne(() => ElementType, (et) => et.sec_element_type_id)
+  @JoinColumn({ name: 'element_type_id' })
+  element_type: ElementType;
 
-  @Column({
-    name: 'configurations',
-    type: 'json',
-    nullable: true,
-  })
-  configurations?: string;
-
-  @Column({
-    name: 'position',
-    type: 'int',
-  })
-  position!: number;
-
-  @Column({
-    name: 'hidden',
-    type: 'boolean',
-    default: false,
-  })
-  hidden!: boolean;
-
-  @Column({
-    name: 'parent_code',
-    type: 'varchar',
-    length: 36,
-    nullable: true,
-  })
-  parent_code?: string;
-
-  @ManyToOne(() => ViewComponent, (vc) => vc.view_configuration_list, {
-    eager: true,
-  })
-  @JoinColumn({ name: 'component_code' })
-  component: ViewComponent;
-
-  /*@ManyToOne(() => ViewConfiguration, (vc) => vc.children)
-  @JoinColumn({ name: 'parent_code' })*/
   @TreeParent()
   parent: ViewConfiguration;
 
-  /*@OneToMany(() => ViewConfiguration, (vc) => vc.parent, {
-    cascade: true,
-  })*/
   @TreeChildren({ cascade: true })
   children: ViewConfiguration[];
 

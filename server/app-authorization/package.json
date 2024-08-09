@@ -35,7 +35,9 @@
     "compose:up:prod": "docker-compose up prod -d"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.624.0",
     "@aws-sdk/client-dynamodb": "^3.529.0",
+    "@aws-sdk/credential-provider-cognito-identity": "^3.624.0",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
@@ -54,6 +56,7 @@
     "activedirectory": "^0.7.2",
     "cross-replace": "^0.2.0",
     "eslint": "^8.57.0",
+    "fast-xml-parser": "^4.4.1",
     "lint": "^1.1.2",
     "mysql2": "^3.9.6",
     "passport-custom": "^1.1.1",

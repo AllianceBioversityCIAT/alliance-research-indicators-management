@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { DataSource, IsNull } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { ViewConfiguration } from './entities/view-configuration.entity';
 import { ResponseUtils } from '../../shared/utils/response.utils';
 import {
@@ -30,10 +30,8 @@ export class ViewConfigurationsService {
         where: {
           sec_view_configuration_code: code,
           is_active: true,
-          component: { component_type_id: 1 },
-          parent_code: IsNull(),
         },
-        relations: ['component', 'role_functional_permission_list'],
+        relations: ['role_functional_permission_list'],
       });
 
     if (!parentNode) {
@@ -45,7 +43,7 @@ export class ViewConfigurationsService {
     return this.dataSource
       .getTreeRepository(ViewConfiguration)
       .findDescendantsTree(parentNode, {
-        relations: ['component', 'role_functional_permission_list'],
+        relations: ['role_functional_permission_list'],
       })
       .then((descendants) => this._formatGetData(descendants))
       .then((descendants: CreateViewConfigurationDto) =>
@@ -76,13 +74,7 @@ export class ViewConfigurationsService {
       mapTree<ViewConfiguration, GetViewConfigurationDto>(node, {
         role_functional_permission_list: 'roles',
         sec_view_configuration_code: 'sec_view_configuration_code',
-        component_code: 'component_code',
-        title: 'title',
-        description: 'description',
-        position: 'position',
-        configurations: 'configurations',
-        hidden: 'hidden',
-        parent_code: 'parent_code',
+        client_element_code: 'client_element_code',
         is_active: 'is_active',
       }),
     );
@@ -98,7 +90,7 @@ export class ViewConfigurationsService {
     const nodeTrees = await this.dataSource
       .getTreeRepository(ViewConfiguration)
       .findTrees({
-        relations: ['component', 'role_functional_permission_list'],
+        relations: ['role_functional_permission_list'],
       });
 
     const treeResponse = this._formatGetData(
@@ -124,11 +116,7 @@ export class ViewConfigurationsService {
       prepareCode,
       {
         sec_view_configuration_code: 'sec_view_configuration_code',
-        component_code: 'component_code',
-        configurations: 'configurations',
-        description: 'description',
-        position: 'position',
-        title: 'title',
+        client_element_code: 'client_element_code',
       },
     );
 
@@ -148,7 +136,7 @@ export class ViewConfigurationsService {
 
         return manager
           .getTreeRepository(ViewConfiguration)
-          .findDescendantsTree(node, { relations: ['component'] });
+          .findDescendantsTree(node, { relations: ['element_type'] });
       })
       .then((node) =>
         ResponseUtils.format({
