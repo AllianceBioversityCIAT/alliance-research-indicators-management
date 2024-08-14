@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
-import { OrganizationalEntity } from '../../organizational-entities/entities/organizational-entity.entity';
+import { UserRoleResult } from '../../user_role_results/entities/user_role_result.entity';
+import { UserRoleContract } from '../../user_role_contracts/entities/user_role_contract.entity';
 
 @Entity('sec_user_roles')
 export class UserRole extends AuditableEntity {
@@ -22,13 +23,6 @@ export class UserRole extends AuditableEntity {
   })
   role_id!: number;
 
-  @Column({
-    type: 'bigint',
-    name: 'organizational_entity_id',
-    nullable: true,
-  })
-  organizational_entity_id?: number;
-
   @ManyToOne(() => User, (user) => user.user_role_list)
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -37,10 +31,9 @@ export class UserRole extends AuditableEntity {
   @JoinColumn({ name: 'role_id' })
   role: Role;
 
-  @ManyToOne(
-    () => OrganizationalEntity,
-    (organizationalEntity) => organizationalEntity.user_role_list,
-  )
-  @JoinColumn({ name: 'organizational_entity_id' })
-  organizational_entity: OrganizationalEntity;
+  @OneToMany(() => UserRoleResult, (urr) => urr.user_role)
+  user_role_result_list: UserRoleResult[];
+
+  @OneToMany(() => UserRoleContract, (urc) => urc.user_role)
+  user_role_contract_list: UserRoleContract[];
 }

@@ -13,11 +13,15 @@ import { SearchRequest } from '../shared/decorators/search-request.decorator';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { ServiceResponseDto } from '../shared/global-dto/service-response.dto';
 import { ResponseAccessTokenDto } from '../shared/global-dto/payload.dto';
+import { CognitoService } from '../tools/AWS/cognito/cognito.service';
 
 @ApiTags('Authorization')
 @Controller()
 export class AuthorizationController {
-  constructor(private readonly authorizationService: AuthorizationService) {}
+  constructor(
+    private readonly authorizationService: AuthorizationService,
+    private readonly cognitoService: CognitoService,
+  ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('cognito'))
@@ -33,5 +37,12 @@ export class AuthorizationController {
     @Headers('refresh-token') refreshToken: string,
   ): Promise<ServiceResponseDto<ResponseAccessTokenDto>> {
     return this.authorizationService.refreshToken(refreshToken);
+  }
+
+  @Get('testing-data/:email')
+  async getTestingData(@Param('email') email: string) {
+    const data = await this.cognitoService.getUserByEmail(email);
+    console.log(data);
+    return data;
   }
 }

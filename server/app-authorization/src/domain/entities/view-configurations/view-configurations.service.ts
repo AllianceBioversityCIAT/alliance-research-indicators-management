@@ -43,7 +43,7 @@ export class ViewConfigurationsService {
     return this.dataSource
       .getTreeRepository(ViewConfiguration)
       .findDescendantsTree(parentNode, {
-        relations: ['role_functional_permission_list'],
+        relations: ['role_functional_permission_list', 'element_type'],
       })
       .then((descendants) => this._formatGetData(descendants))
       .then((descendants: CreateViewConfigurationDto) =>
@@ -75,6 +75,8 @@ export class ViewConfigurationsService {
         role_functional_permission_list: 'roles',
         sec_view_configuration_code: 'sec_view_configuration_code',
         client_element_code: 'client_element_code',
+        element_type_id: 'element_type_id',
+        element_type: 'element_type',
         is_active: 'is_active',
       }),
     );
@@ -90,7 +92,7 @@ export class ViewConfigurationsService {
     const nodeTrees = await this.dataSource
       .getTreeRepository(ViewConfiguration)
       .findTrees({
-        relations: ['role_functional_permission_list'],
+        relations: ['role_functional_permission_list', 'element_type'],
       });
 
     const treeResponse = this._formatGetData(
@@ -117,6 +119,7 @@ export class ViewConfigurationsService {
       {
         sec_view_configuration_code: 'sec_view_configuration_code',
         client_element_code: 'client_element_code',
+        element_type_id: 'element_type_id',
       },
     );
 

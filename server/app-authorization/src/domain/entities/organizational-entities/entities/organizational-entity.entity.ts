@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
 import { EntityType } from '../../entity-types/entities/entity-type.entity';
-import { UserRole } from '../../user_roles/entities/user_role.entity';
 
 @Entity('sec_organizational_entities')
 export class OrganizationalEntity extends AuditableEntity {
@@ -52,7 +51,4 @@ export class OrganizationalEntity extends AuditableEntity {
     (organizationalEntity) => organizationalEntity.parent,
   )
   children: OrganizationalEntity[];
-
-  @OneToMany(() => UserRole, (userRole) => userRole.organizational_entity)
-  user_role_list: UserRole[];
 }

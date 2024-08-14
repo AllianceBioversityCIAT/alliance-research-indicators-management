@@ -13,6 +13,8 @@ import {
 import { RefreshToken } from './refresh-tokens/entities/refresh-token.entity';
 import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
 import { ENV } from '../shared/utils/env.utils';
+import { UserRole } from './user_roles/entities/user_role.entity';
+import { RolesEnum } from '../shared/enums/roles.enum';
 
 @Injectable()
 export class AuthorizationService {
@@ -38,10 +40,19 @@ export class AuthorizationService {
       .then(async (user: User) => {
         let tempUser: User = user;
         if (!tempUser && isCgir) {
-          tempUser = await userRepo.save({
-            email: email,
-            first_name: profileData.given_name,
-            last_name: profileData.family_name,
+          tempUser = await this.dataSource.transaction(async (manager) => {
+            const userData = await manager.getRepository(User).save({
+              email: email,
+              first_name: profileData.given_name,
+              last_name: profileData.family_name,
+            });
+
+            manager.getRepository(UserRole).save({
+              user_id: tempUser.sec_user_id,
+              role_id: RolesEnum.CONTRIBUTOR,
+            });
+
+            return userData;
           });
         }
 

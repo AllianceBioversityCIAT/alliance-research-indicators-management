@@ -7,6 +7,8 @@ export class CreateViewConfigurationDto {
   @ApiProperty()
   public client_element_code: string;
   @ApiProperty()
+  element_type_id!: number;
+  @ApiProperty()
   public roles: SaveRoles[];
   @ApiProperty({ isArray: true, type: CreateViewConfigurationDto })
   public children: CreateViewConfigurationDto[];

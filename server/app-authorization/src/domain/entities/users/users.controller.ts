@@ -14,13 +14,18 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Post()
-  @Roles(RolesEnum.ADMIN)
+  @Roles(RolesEnum.GENERAL_ADMIN)
   create(@Body() newUser: CreateUserDto) {
     return this.usersService.create(newUser);
   }
 
   @ApiBearerAuth()
-  @Roles(RolesEnum.ADMIN, RolesEnum.CONTRIBUTOR)
+  @Roles(
+    RolesEnum.GENERAL_ADMIN,
+    RolesEnum.IT_SUPPORT,
+    RolesEnum.CONTRIBUTOR,
+    RolesEnum.GLOBAL,
+  )
   @Get(':id')
   @ApiParam({ name: 'id', type: 'number' })
   findById(@Param('id') id: string) {
@@ -28,6 +33,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
+  @Roles(RolesEnum.GENERAL_ADMIN, RolesEnum.IT_SUPPORT)
   @Patch(':id')
   @ApiParam({ name: 'id', type: 'number' })
   update(@Param('id') id: string, @Body() updateUser: UpdateUserDto) {

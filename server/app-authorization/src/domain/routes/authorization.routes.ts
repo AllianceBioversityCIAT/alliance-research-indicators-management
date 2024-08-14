@@ -22,15 +22,14 @@ const role: Routes = [
   { path: 'endpoint-permissions', module: RoleEndpointPermissionsModule },
 ];
 
-const users: Routes = [{ path: 'roles', module: UserRolesModule }];
-
 const view: Routes = [
   { path: 'configurations', module: ViewConfigurationsModule },
-  { path: 'types', module: ElementypesModule },
+  { path: 'element/type', module: ElementypesModule },
 ];
 
 const children: Routes = [
-  { path: 'user', module: UsersModule, children: users },
+  { path: 'user-roles', module: UserRolesModule },
+  { path: 'users', module: UsersModule },
   { path: 'entity-types', module: EntityTypesModule },
   { path: 'organizational', children: organizational },
   { path: 'role', module: RolesModule, children: role },

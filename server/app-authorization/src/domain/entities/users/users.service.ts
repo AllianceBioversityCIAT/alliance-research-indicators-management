@@ -24,9 +24,9 @@ export class UsersService {
         });
 
         await this._userRolesService._setRoleToUser(
-          manager,
           resUser.sec_user_id,
           newUser.role_id,
+          manager,
         );
 
         return resUser;

@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { DataSource, FindOptionsWhere } from 'typeorm';
 import { RoleFunctionalPermission } from './entities/role_functional_permission.entity';
 import { CreateRoleFunctionalPermissionDto } from './dto/create-role_functional_permission.dto';
 import { GetViewConfigurationDto } from '../view-configurations/dto/get-view-configuration.dto';
 import { CreateViewConfigurationDto } from '../view-configurations/dto/create-view-configuration.dto';
+import { ResponseUtils } from '../../shared/utils/response.utils';
 
 @Injectable()
 export class RoleFunctionalPermissionsService {
@@ -50,5 +51,35 @@ export class RoleFunctionalPermissionsService {
     );
 
     return mappedNode;
+  }
+
+  async find(roleId: number) {
+    const where: FindOptionsWhere<RoleFunctionalPermission> = {
+      role: {
+        is_active: true,
+      },
+      is_active: true,
+    };
+
+    if (roleId !== undefined && roleId !== null && !Number.isNaN(roleId))
+      where.role_id = roleId;
+
+    return this.dataSource
+      .getRepository(RoleFunctionalPermission)
+      .find({
+        where,
+        relations: {
+          view_configuration: {
+            element_type: true,
+          },
+        },
+      })
+      .then((roleFunctionalPermissions) =>
+        ResponseUtils.format({
+          status: HttpStatus.OK,
+          description: 'Role functional permissions found successfully',
+          data: roleFunctionalPermissions,
+        }),
+      );
   }
 }

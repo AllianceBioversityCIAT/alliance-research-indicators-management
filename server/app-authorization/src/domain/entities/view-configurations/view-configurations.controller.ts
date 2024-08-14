@@ -20,7 +20,12 @@ export class ViewConfigurationsController {
   }
 
   @ApiBearerAuth()
-  @Roles(RolesEnum.ADMIN, RolesEnum.CONTRIBUTOR, RolesEnum.GUEST)
+  @Roles(
+    RolesEnum.GENERAL_ADMIN,
+    RolesEnum.CONTRIBUTOR,
+    RolesEnum.IT_SUPPORT,
+    RolesEnum.GLOBAL,
+  )
   @Get('schema')
   getSchema() {
     return this.viewConfigurationsService.getSchema();
@@ -28,7 +33,7 @@ export class ViewConfigurationsController {
 
   @ApiBearerAuth()
   @Post('schema')
-  @Roles(RolesEnum.ADMIN)
+  @Roles(RolesEnum.GENERAL_ADMIN, RolesEnum.IT_SUPPORT)
   @ApiBody({ type: CreateViewConfigurationDto })
   createSchema(@Body() schema: CreateViewConfigurationDto) {
     return this.viewConfigurationsService.createSchema(schema);
@@ -36,7 +41,7 @@ export class ViewConfigurationsController {
 
   @ApiBearerAuth()
   @Patch('schema/:code')
-  @Roles(RolesEnum.ADMIN)
+  @Roles(RolesEnum.GENERAL_ADMIN, RolesEnum.IT_SUPPORT)
   @ApiParam({ name: 'code', type: String })
   @ApiBody({ type: CreateViewConfigurationDto })
   updateSchema(

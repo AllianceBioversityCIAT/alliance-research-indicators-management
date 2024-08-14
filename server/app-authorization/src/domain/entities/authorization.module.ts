@@ -15,10 +15,13 @@ import { ViewConfigurationsModule } from './view-configurations/view-configurati
 import { ElementypesModule } from './element-types/element-types.module';
 import { UserRolesModule } from './user_roles/user_roles.module';
 import { RoleEndpointPermissionsModule } from './role_endpoint_permissions/role_endpoint_permissions.module';
+import { CognitoService } from '../tools/AWS/cognito/cognito.service';
+import { UserRoleResultsModule } from './user_role_results/user_role_results.module';
+import { UserRoleContractsModule } from './user_role_contracts/user_role_contracts.module';
 
 @Module({
   controllers: [AuthorizationController],
-  providers: [AuthorizationService, CognitoStrategy],
+  providers: [AuthorizationService, CognitoStrategy, CognitoService],
   imports: [
     RolesModule,
     UsersModule,
@@ -36,6 +39,8 @@ import { RoleEndpointPermissionsModule } from './role_endpoint_permissions/role_
     EntityTypesModule,
     UserRolesModule,
     RoleEndpointPermissionsModule,
+    UserRoleResultsModule,
+    UserRoleContractsModule,
   ],
   exports: [],
 })
