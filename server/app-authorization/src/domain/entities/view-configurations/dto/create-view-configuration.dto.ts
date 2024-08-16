@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PermissionStateEnum } from '../../role_functional_permissions/enum/permission-state.enum';
+import { PermissionStateEnum } from '../../role-functional-permissions/enum/permission-state.enum';
 
 export class CreateViewConfigurationDto {
   @ApiProperty()

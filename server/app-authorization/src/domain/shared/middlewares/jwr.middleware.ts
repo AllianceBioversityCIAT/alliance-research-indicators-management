@@ -11,7 +11,7 @@ import { ExceptionMessage } from '../enums/exception-message.enum';
 import { JwtService, TokenExpiredError, JsonWebTokenError } from '@nestjs/jwt';
 import { env } from 'process';
 import { DataSource } from 'typeorm';
-import { UserRole } from '../../entities/user_roles/entities/user_role.entity';
+import { UserRole } from '../../entities/user-roles/entities/user-role.entity';
 import { PayloadDto } from '../global-dto/payload.dto';
 
 @Injectable()

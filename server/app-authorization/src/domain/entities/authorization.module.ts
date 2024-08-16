@@ -13,11 +13,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
 import { ViewConfigurationsModule } from './view-configurations/view-configurations.module';
 import { ElementypesModule } from './element-types/element-types.module';
-import { UserRolesModule } from './user_roles/user_roles.module';
-import { RoleEndpointPermissionsModule } from './role_endpoint_permissions/role_endpoint_permissions.module';
+import { UserRolesModule } from './user-roles/user-roles.module';
+import { RoleEndpointPermissionsModule } from './role-endpoint-permissions/role-endpoint-permissions.module';
 import { CognitoService } from '../tools/AWS/cognito/cognito.service';
-import { UserRoleResultsModule } from './user_role_results/user_role_results.module';
-import { UserRoleContractsModule } from './user_role_contracts/user_role_contracts.module';
+import { UserRoleResultsModule } from './user-role-results/user-role-results.module';
+import { UserRoleContractsModule } from './user-role-contracts/user-role-contracts.module';
 
 @Module({
   controllers: [AuthorizationController],

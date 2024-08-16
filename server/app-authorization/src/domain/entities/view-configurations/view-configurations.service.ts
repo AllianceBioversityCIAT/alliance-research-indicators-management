@@ -10,8 +10,8 @@ import {
 } from '../../shared/utils/trees.utils';
 import { ServiceResponseDto } from '../../shared/global-dto/service-response.dto';
 import { CreateViewConfigurationDto } from './dto/create-view-configuration.dto';
-import { CreateRoleFunctionalPermissionDto } from '../role_functional_permissions/dto/create-role_functional_permission.dto';
-import { RoleFunctionalPermissionsService } from '../role_functional_permissions/role_functional_permissions.service';
+import { CreateRoleFunctionalPermissionDto } from '../role-functional-permissions/dto/create-role-functional-permission.dto';
+import { RoleFunctionalPermissionsService } from '../role-functional-permissions/role-functional-permissions.service';
 import { GetViewConfigurationDto } from './dto/get-view-configuration.dto';
 
 @Injectable()

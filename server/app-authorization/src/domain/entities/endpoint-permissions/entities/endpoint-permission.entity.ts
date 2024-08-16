@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
-import { RoleEndpointPermission } from '../../role_endpoint_permissions/entities/role_endpoint_permission.entity';
+import { RoleEndpointPermission } from '../../role-endpoint-permissions/entities/role-endpoint-permission.entity';
 
 @Entity('sec_endpoint_permissions')
 export class EndpointPermission extends AuditableEntity {

@@ -8,9 +8,9 @@ import {
 } from 'typeorm';
 import { AuditableControlListEntity } from '../../../shared/global-dto/auditable-control-list.entity';
 import { RoleFocus } from '../../role-focus/entities/role-focus.entity';
-import { RoleFunctionalPermission } from '../../role_functional_permissions/entities/role_functional_permission.entity';
-import { UserRole } from '../../user_roles/entities/user_role.entity';
-import { RoleEndpointPermission } from '../../role_endpoint_permissions/entities/role_endpoint_permission.entity';
+import { RoleFunctionalPermission } from '../../role-functional-permissions/entities/role-functional-permission.entity';
+import { UserRole } from '../../user-roles/entities/user-role.entity';
+import { RoleEndpointPermission } from '../../role-endpoint-permissions/entities/role-endpoint-permission.entity';
 
 @Entity('sec_roles')
 export class Role extends AuditableControlListEntity {

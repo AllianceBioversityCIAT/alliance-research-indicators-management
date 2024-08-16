@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserRolesService } from '../user_roles/user_roles.service';
+import { UserRolesService } from '../user-roles/user-roles.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ServiceResponseDto } from '../../shared/global-dto/service-response.dto';
 import { ResponseUtils } from '../../shared/utils/response.utils';

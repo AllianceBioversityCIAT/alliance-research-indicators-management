@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
 import { RefreshToken } from '../../refresh-tokens/entities/refresh-token.entity';
-import { UserRole } from '../../user_roles/entities/user_role.entity';
+import { UserRole } from '../../user-roles/entities/user-role.entity';
 
 @Entity('sec_users')
 export class User extends AuditableEntity {

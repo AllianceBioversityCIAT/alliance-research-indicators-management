@@ -6,11 +6,11 @@ import { OrganizationalEntitiesModule } from '../entities/organizational-entitie
 import { EntityTypesModule } from '../entities/entity-types/entity-types.module';
 import { EndpointPermissionsModule } from '../entities/endpoint-permissions/endpoint-permissions.module';
 import { RoleFocusModule } from '../entities/role-focus/role-focus.module';
-import { UserRolesModule } from '../entities/user_roles/user_roles.module';
-import { RoleFunctionalPermissionsModule } from '../entities/role_functional_permissions/role_functional_permissions.module';
+import { UserRolesModule } from '../entities/user-roles/user-roles.module';
+import { RoleFunctionalPermissionsModule } from '../entities/role-functional-permissions/role-functional-permissions.module';
 import { ElementypesModule } from '../entities/element-types/element-types.module';
 import { ViewConfigurationsModule } from '../entities/view-configurations/view-configurations.module';
-import { RoleEndpointPermissionsModule } from '../entities/role_endpoint_permissions/role_endpoint_permissions.module';
+import { RoleEndpointPermissionsModule } from '../entities/role-endpoint-permissions/role-endpoint-permissions.module';
 
 const organizational: Routes = [
   { path: 'entities', module: OrganizationalEntitiesModule },

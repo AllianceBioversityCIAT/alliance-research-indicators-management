@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../../entities/users/entities/user.entity';
-import { UserRole } from '../../entities/user_roles/entities/user_role.entity';
+import { UserRole } from '../../entities/user-roles/entities/user-role.entity';
 
 export class PayloadDto {
   constructor(

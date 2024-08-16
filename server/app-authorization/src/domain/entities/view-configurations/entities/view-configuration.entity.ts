@@ -9,7 +9,7 @@ import {
   TreeParent,
 } from 'typeorm';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
-import { RoleFunctionalPermission } from '../../role_functional_permissions/entities/role_functional_permission.entity';
+import { RoleFunctionalPermission } from '../../role-functional-permissions/entities/role-functional-permission.entity';
 import { ElementType } from '../../element-types/entities/element-type.entity';
 
 @Entity('sec_view_configurations')

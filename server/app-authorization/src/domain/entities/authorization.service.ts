@@ -13,7 +13,7 @@ import {
 import { RefreshToken } from './refresh-tokens/entities/refresh-token.entity';
 import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
 import { ENV } from '../shared/utils/env.utils';
-import { UserRole } from './user_roles/entities/user_role.entity';
+import { UserRole } from './user-roles/entities/user-role.entity';
 import { RolesEnum } from '../shared/enums/roles.enum';
 
 @Injectable()
