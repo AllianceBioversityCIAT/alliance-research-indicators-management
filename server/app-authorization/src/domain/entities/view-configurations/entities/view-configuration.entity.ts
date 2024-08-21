@@ -41,12 +41,16 @@ export class ViewConfiguration extends AuditableEntity {
   @JoinColumn({ name: 'element_type_id' })
   element_type: ElementType;
 
-  @TreeParent()
+  @TreeParent({ onDelete: 'CASCADE' })
   parent: ViewConfiguration;
 
   @TreeChildren({ cascade: true })
   children: ViewConfiguration[];
 
-  @OneToMany(() => RoleFunctionalPermission, (rfp) => rfp.view_configuration)
+  @OneToMany(() => RoleFunctionalPermission, (rfp) => rfp.view_configuration, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   role_functional_permission_list: RoleFunctionalPermission[];
 }

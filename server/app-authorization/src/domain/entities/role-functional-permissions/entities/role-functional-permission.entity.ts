@@ -80,6 +80,9 @@ export class RoleFunctionalPermission extends AuditableEntity {
   @ManyToOne(
     () => ViewConfiguration,
     (viewConfiguration) => viewConfiguration.role_functional_permission_list,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   @JoinColumn({ name: 'view_configuration_code' })
   view_configuration: ViewConfiguration;

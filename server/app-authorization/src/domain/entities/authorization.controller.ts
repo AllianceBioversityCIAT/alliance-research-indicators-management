@@ -1,30 +1,25 @@
-import {
-  Controller,
-  Post,
-  UseGuards,
-  Headers,
-  Get,
-  Param,
-} from '@nestjs/common';
+import { Controller, Post, UseGuards, Headers } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiHeader,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SearchRequest } from '../shared/decorators/search-request.decorator';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { ServiceResponseDto } from '../shared/global-dto/service-response.dto';
 import { ResponseAccessTokenDto } from '../shared/global-dto/payload.dto';
-import { CognitoService } from '../tools/AWS/cognito/cognito.service';
 
 @ApiTags('Authorization')
 @Controller()
 export class AuthorizationController {
-  constructor(
-    private readonly authorizationService: AuthorizationService,
-    private readonly cognitoService: CognitoService,
-  ) {}
+  constructor(private readonly authorizationService: AuthorizationService) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('cognito'))
+  @ApiOperation({ summary: 'Authenticate user and return access token' })
   @Post('login')
   login(
     @SearchRequest('user') user: CognitoProfileDto,
@@ -33,16 +28,14 @@ export class AuthorizationController {
   }
 
   @Post('refresh-token')
+  @ApiOperation({ summary: 'Refresh the access token using a refresh token' })
+  @ApiHeader({
+    name: 'refresh-token',
+    required: true,
+  })
   refreshToken(
     @Headers('refresh-token') refreshToken: string,
   ): Promise<ServiceResponseDto<ResponseAccessTokenDto>> {
     return this.authorizationService.refreshToken(refreshToken);
-  }
-
-  @Get('testing-data/:email')
-  async getTestingData(@Param('email') email: string) {
-    const data = await this.cognitoService.getUserByEmail(email);
-    console.log(data);
-    return data;
   }
 }

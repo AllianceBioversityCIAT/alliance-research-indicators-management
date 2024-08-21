@@ -7,7 +7,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class UserRolesController {
   constructor(private readonly userRolesService: UserRolesService) {}
 
-  @Get(':id')
+  @Get('user/:id')
   findRolesByUserId(@Param('id') id: string) {
     return this.userRolesService.findRolesByUserId(+id);
   }

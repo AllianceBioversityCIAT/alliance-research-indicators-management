@@ -156,6 +156,32 @@ export class ViewConfigurationsService {
     return responseSchema;
   }
 
+  async deleteSchema(code: string) {
+    const node = await this.dataSource
+      .getTreeRepository(ViewConfiguration)
+      .findOne({
+        where: { sec_view_configuration_code: code, is_active: true },
+      });
+
+    if (!node) {
+      throw new NotFoundException(
+        `The view configuration with code ${code} was not found`,
+      );
+    }
+
+    return this.dataSource
+      .transaction(async (manager) => {
+        await manager.getTreeRepository(ViewConfiguration).remove(node);
+      })
+      .then(() =>
+        ResponseUtils.format({
+          status: HttpStatus.OK,
+          description: `View Component deleted successfully`,
+          data: node,
+        }),
+      );
+  }
+
   async updateSchema(
     code: string,
     schema: CreateViewConfigurationDto,
