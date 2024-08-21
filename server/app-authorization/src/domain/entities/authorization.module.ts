@@ -18,10 +18,18 @@ import { RoleEndpointPermissionsModule } from './role-endpoint-permissions/role-
 import { CognitoService } from '../tools/AWS/cognito/cognito.service';
 import { UserRoleResultsModule } from './user-role-results/user-role-results.module';
 import { UserRoleContractsModule } from './user-role-contracts/user-role-contracts.module';
+import { MessageMicroservice } from '../tools/broker/message.microservice';
+import { TemplateService } from '../auxiliary/template/template.service';
 
 @Module({
   controllers: [AuthorizationController],
-  providers: [AuthorizationService, CognitoStrategy, CognitoService],
+  providers: [
+    AuthorizationService,
+    CognitoStrategy,
+    CognitoService,
+    TemplateService,
+    MessageMicroservice,
+  ],
   imports: [
     RolesModule,
     UsersModule,

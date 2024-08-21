@@ -20,12 +20,15 @@ async function bootstrap() {
     .build();
   const port: number = parseInt(env.ARIM_PORT);
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const swaggerPath: string = 'swagger';
+  SwaggerModule.setup(swaggerPath, app, document);
   await app
     .listen(port)
     .then(() => {
       logger.debug(`Application is running http://localhost:${port}`);
-      logger.debug(`Documentation is running http://localhost:${port}/api`);
+      logger.debug(
+        `Documentation is running http://localhost:${port}/${swaggerPath}`,
+      );
     })
     .catch((err) => {
       const portValue: number | string = port || '<Not defined>';

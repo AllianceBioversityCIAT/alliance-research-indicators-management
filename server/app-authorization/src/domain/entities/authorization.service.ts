@@ -13,8 +13,16 @@ import {
 import { RefreshToken } from './refresh-tokens/entities/refresh-token.entity';
 import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
 import { ENV } from '../shared/utils/env.utils';
-import { UserRole } from './user-roles/entities/user-role.entity';
 import { RolesEnum } from '../shared/enums/roles.enum';
+import { TemplateService } from '../auxiliary/template/template.service';
+import {
+  TemplateEnum,
+  WelcomeEmailTemplate,
+} from '../auxiliary/template/enum/template.enum';
+import { env } from 'process';
+import { MessageMicroservice } from '../tools/broker/message.microservice';
+import { EmailBody } from '../tools/broker/dtos/mailer.dto';
+import { UsersService } from './users/users.service';
 
 @Injectable()
 export class AuthorizationService {
@@ -22,6 +30,9 @@ export class AuthorizationService {
     private readonly dataSource: DataSource,
     private readonly _jwt: JwtService,
     private readonly _refreshTokenService: RefreshTokensService,
+    private readonly _templateService: TemplateService,
+    private readonly _messageMicroservice: MessageMicroservice,
+    private readonly _usersService: UsersService,
   ) {}
 
   login(
@@ -40,20 +51,36 @@ export class AuthorizationService {
       .then(async (user: User) => {
         let tempUser: User = user;
         if (!tempUser && isCgir) {
-          tempUser = await this.dataSource.transaction(async (manager) => {
-            const userData = await manager.getRepository(User).save({
+          tempUser = await this._usersService
+            .create({
               email: email,
               first_name: profileData.given_name,
               last_name: profileData.family_name,
-            });
-
-            manager.getRepository(UserRole).save({
-              user_id: tempUser.sec_user_id,
               role_id: RolesEnum.CONTRIBUTOR,
-            });
+            })
+            .then(async ({ data }) => {
+              await this._templateService
+                ._getTemplate<WelcomeEmailTemplate>(
+                  TemplateEnum.WELCOME_EMAIL,
+                  {
+                    client_host: env.ARIM_ALIANCE_CLI_HOST,
+                    first_name: data.first_name,
+                    last_name: data.last_name,
+                  },
+                )
+                .then(async (template: string) => {
+                  const sendEmail: EmailBody = {
+                    message: {
+                      socketFile: Buffer.from(template),
+                    },
+                    subject: 'Welcome to Alliance',
+                    to: data.email,
+                  };
 
-            return userData;
-          });
+                  await this._messageMicroservice.sendEmail(sendEmail);
+                });
+              return data;
+            });
         }
 
         if (tempUser) {
