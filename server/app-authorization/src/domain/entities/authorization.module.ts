@@ -15,7 +15,6 @@ import { ViewConfigurationsModule } from './view-configurations/view-configurati
 import { ElementypesModule } from './element-types/element-types.module';
 import { UserRolesModule } from './user-roles/user-roles.module';
 import { RoleEndpointPermissionsModule } from './role-endpoint-permissions/role-endpoint-permissions.module';
-import { CognitoService } from '../tools/AWS/cognito/cognito.service';
 import { UserRoleResultsModule } from './user-role-results/user-role-results.module';
 import { UserRoleContractsModule } from './user-role-contracts/user-role-contracts.module';
 import { MessageMicroservice } from '../tools/broker/message.microservice';
@@ -26,7 +25,6 @@ import { TemplateService } from '../auxiliary/template/template.service';
   providers: [
     AuthorizationService,
     CognitoStrategy,
-    CognitoService,
     TemplateService,
     MessageMicroservice,
   ],
