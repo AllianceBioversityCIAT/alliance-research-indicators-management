@@ -42,6 +42,9 @@ import { AuxiliaryModule } from './domain/auxiliary/auxiliary.module';
     TypeOrmModule.forRoot(
       <DataSourceOptions>getDataSource(dataSourceTarget.CORE, false),
     ),
+    TypeOrmModule.forRoot(
+      <DataSourceOptions>getDataSource(dataSourceTarget.SECONDARY, false),
+    ),
     RouterModule.register(mainRoutes),
     ConfigModule.forRoot({
       envFilePath: '.env',
