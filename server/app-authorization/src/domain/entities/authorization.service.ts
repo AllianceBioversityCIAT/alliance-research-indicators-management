@@ -1,9 +1,7 @@
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { User } from './users/entities/user.entity';
-import { ServiceResponseDto } from '../shared/global-dto/service-response.dto';
-import { ResponseUtils } from '../shared/utils/response.utils';
 import { JwtService } from '@nestjs/jwt';
 import {
   AccessTokenDto,
@@ -35,9 +33,7 @@ export class AuthorizationService {
     private readonly _usersService: UsersService,
   ) {}
 
-  login(
-    profileData: CognitoProfileDto,
-  ): Promise<ServiceResponseDto<ResponseAccessTokenDto>> {
+  login(profileData: CognitoProfileDto): Promise<ResponseAccessTokenDto> {
     const email: string = profileData.email?.trim().toLocaleLowerCase();
     const isCgir: boolean = email.includes('@cgiar.org');
     const userRepo: Repository<User> = this.dataSource.getRepository(User);
@@ -58,7 +54,7 @@ export class AuthorizationService {
               last_name: profileData.family_name,
               role_id: RolesEnum.CONTRIBUTOR,
             })
-            .then(async ({ data }) => {
+            .then(async (data) => {
               await this._templateService
                 ._getTemplate<WelcomeEmailTemplate>(
                   TemplateEnum.WELCOME_EMAIL,
@@ -97,31 +93,23 @@ export class AuthorizationService {
         );
       });
 
-    return access
-      .then((access: AccessTokenDto) => {
-        const { sec_user_id: user_id } = access.user;
-        return this.dataSource
-          .getRepository(RefreshToken)
-          .save({
-            created_by: user_id,
-            user_id: user_id,
-            refresh_token_code: access.refresh_token,
-            expires_at: ENV.EXPIRE_DATE,
-          })
-          .then((refreshToken: RefreshToken) => {
-            return new ResponseAccessTokenDto(
-              access.access_token,
-              refreshToken.refresh_token_code,
-            );
-          });
-      })
-      .then((response: ResponseAccessTokenDto) => {
-        return ResponseUtils.format({
-          status: HttpStatus.OK,
-          description: 'User logged is successfully',
-          data: response,
+    return access.then((access: AccessTokenDto) => {
+      const { sec_user_id: user_id } = access.user;
+      return this.dataSource
+        .getRepository(RefreshToken)
+        .save({
+          created_by: user_id,
+          user_id: user_id,
+          refresh_token_code: access.refresh_token,
+          expires_at: ENV.EXPIRE_DATE,
+        })
+        .then((refreshToken: RefreshToken) => {
+          return new ResponseAccessTokenDto(
+            access.access_token,
+            refreshToken.refresh_token_code,
+          );
         });
-      });
+    });
   }
 
   private generateToken(user: User): string {
@@ -133,20 +121,11 @@ export class AuthorizationService {
     return this._jwt.sign(payload);
   }
 
-  refreshToken(
-    refreshToken: string,
-  ): Promise<ServiceResponseDto<ResponseAccessTokenDto>> {
+  async refreshToken(refreshToken: string): Promise<ResponseAccessTokenDto> {
     const token: Promise<RefreshToken> =
       this._refreshTokenService.validActiveRefreshToken(refreshToken);
     return token.then(({ user }: RefreshToken) => {
-      return ResponseUtils.format({
-        status: HttpStatus.OK,
-        description: 'New access token generated successfully',
-        data: new ResponseAccessTokenDto(
-          this.generateToken(user),
-          refreshToken,
-        ),
-      });
+      return new ResponseAccessTokenDto(this.generateToken(user), refreshToken);
     });
   }
 }

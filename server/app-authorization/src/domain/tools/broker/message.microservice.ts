@@ -8,7 +8,7 @@ export class MessageMicroservice extends BrokerConnectionBase {
   private readonly _logger = new Logger(MessageMicroservice.name);
 
   constructor() {
-    super('cgiar_ms_test_mailer_queue');
+    super(env.ARIM_QUEUE_EMAIL);
   }
 
   async sendEmail(message: EmailBody) {

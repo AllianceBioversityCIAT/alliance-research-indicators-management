@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
@@ -10,6 +18,7 @@ import {
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from '../../shared/decorators/required-roles.decorator';
 import { RolesEnum } from '../../shared/enums/roles.enum';
+import { ResponseUtils } from '../../shared/utils/response.utils';
 
 @Controller()
 @ApiBearerAuth()
@@ -22,7 +31,13 @@ export class UsersController {
   @Post()
   @Roles(RolesEnum.GENERAL_ADMIN)
   create(@Body() newUser: CreateUserDto) {
-    return this.usersService.create(newUser);
+    return this.usersService.create(newUser).then((response) =>
+      ResponseUtils.format({
+        status: HttpStatus.CREATED,
+        description: `User ${response.email} created successfully`,
+        data: response,
+      }),
+    );
   }
 
   @ApiBearerAuth()
@@ -36,7 +51,13 @@ export class UsersController {
   @ApiOperation({ summary: 'Find user by id' })
   @ApiParam({ name: 'id', type: 'number' })
   findById(@Param('id') id: string) {
-    return this.usersService.findById(+id);
+    return this.usersService.findById(+id).then((response) =>
+      ResponseUtils.format({
+        status: HttpStatus.OK,
+        description: `User ${response.email} found successfully`,
+        data: response,
+      }),
+    );
   }
 
   @ApiBearerAuth()
@@ -45,6 +66,12 @@ export class UsersController {
   @Patch(':id')
   @ApiParam({ name: 'id', type: 'number' })
   update(@Param('id') id: string, @Body() updateUser: UpdateUserDto) {
-    return this.usersService.update(+id, updateUser);
+    return this.usersService.update(+id, updateUser).then((response) =>
+      ResponseUtils.format({
+        status: HttpStatus.OK,
+        description: `User ${response.email} found successfully`,
+        data: response,
+      }),
+    );
   }
 }
