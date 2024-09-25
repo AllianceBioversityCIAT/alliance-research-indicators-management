@@ -31,7 +31,7 @@ export class UserRoleContractsService {
           role_id: role_id,
           contract_id: contract_id,
         });
-    } else if (newUserRoleContract.is_active === false) {
+    } else if (!newUserRoleContract.is_active) {
       newUserRoleContract = await dataManager
         .getRepository(UserRoleContract)
         .update(

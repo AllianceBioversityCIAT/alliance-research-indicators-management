@@ -59,7 +59,7 @@ export class AuthorizationService {
                 ._getTemplate<WelcomeEmailTemplate>(
                   TemplateEnum.WELCOME_EMAIL,
                   {
-                    client_host: env.ARIM_ALIANCE_CLI_HOST,
+                    client_host: env.ARIM_ALLIANCE_CLI_HOST,
                     first_name: data.first_name,
                     last_name: data.last_name,
                   },

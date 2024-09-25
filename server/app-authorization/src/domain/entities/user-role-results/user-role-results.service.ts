@@ -29,7 +29,7 @@ export class UserRoleResultsService {
         role_id: role_id,
         result_id: result_id,
       });
-    } else if (newUserRoleResult.is_active === false) {
+    } else if (!newUserRoleResult.is_active) {
       newUserRoleResult = await dataManager
         .getRepository(UserRoleResult)
         .update(

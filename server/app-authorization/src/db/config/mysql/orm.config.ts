@@ -32,6 +32,7 @@ export const getDataSource = (
       entities = `${__dirname}/../../../domain/entities/**/*.entity{.ts,.js}`;
       break;
     case dataSourceTarget.TEST:
+      name = 'default';
       host = env.ARIM_TEST_MYSQL_HOST;
       username = env.ARIM_TEST_MYSQL_USER_NAME;
       password = env.ARIM_TEST_MYSQL_USER_PASS;

@@ -41,7 +41,7 @@ describe('ViewConfigurations', () => {
 
   describe('should be return a view configuration by section', () => {
     it('should return a view configuration by section', async () => {
-      const code = '0244cb38-132b-4e31-a50e-3128fc71d5d5';
+      const code = '92a8a69b-f606-47f8-9d7c-0c087ea3ea63';
       const result = await service.getSchemaByRootCode(code);
       expect(result).toBeDefined();
       expect(result.data.client_element_code).toBeDefined();

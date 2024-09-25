@@ -55,7 +55,7 @@ export class UserRolesService {
           userRole.user_id,
           userRole.role_id,
         );
-      } else if (existUserRole.is_active === false) {
+      } else if (!existUserRole.is_active) {
         await manager.getRepository(UserRole).update(
           {
             user_id: existUserRole.user_id,

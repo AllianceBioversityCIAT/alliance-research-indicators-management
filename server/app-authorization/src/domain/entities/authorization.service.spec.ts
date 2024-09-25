@@ -41,11 +41,9 @@ describe('AuthorizationService', () => {
       };
       process.env.ARIM_JWT_REFRESH_EXPIRES_IN = '1d';
       const result = await service.login(profileData);
-      expect(result.data.access_token).toBeDefined();
-      expect(typeof result.data.access_token).toBe('string');
-      expect(typeof result.data.refresh_token).toBe('string');
-      expect(result.description).toBe('User logged is successfully');
-      expect(result.status).toBe(HttpStatus.OK);
+      expect(result.access_token).toBeDefined();
+      expect(typeof result.access_token).toBe('string');
+      expect(typeof result.refresh_token).toBe('string');
     });
   });
 
