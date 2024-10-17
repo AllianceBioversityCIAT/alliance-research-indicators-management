@@ -5,6 +5,7 @@ import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { env } from 'process';
 import { json, urlencoded } from 'express';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const logger: Logger = new Logger('Bootstrap');
@@ -33,6 +34,31 @@ async function bootstrap() {
     .catch((err) => {
       const portValue: number | string = port || '<Not defined>';
       logger.error(`Application failed to start on port ${portValue}`);
+      logger.error(err);
+    });
+
+  const queueHost: string = `amqps://${env.ARIM_MQ_USER}:${env.ARIM_MQ_PASSWORD}@${env.ARIM_MQ_HOST}`;
+  const appSocket = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.RMQ,
+      options: {
+        urls: [queueHost],
+        queue: env.ARIM_QUEUE,
+        queueOptions: {
+          durable: true,
+        },
+      },
+    },
+  );
+
+  await appSocket
+    .listen()
+    .then(() => {
+      logger.debug(`Microservice is already listening`);
+    })
+    .catch((err) => {
+      logger.error(`Microservice present an error`);
       logger.error(err);
     });
 }

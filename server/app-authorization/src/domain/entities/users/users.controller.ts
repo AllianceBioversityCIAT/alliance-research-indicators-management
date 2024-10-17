@@ -19,6 +19,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from '../../shared/decorators/required-roles.decorator';
 import { RolesEnum } from '../../shared/enums/roles.enum';
 import { ResponseUtils } from '../../shared/utils/response.utils';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { User } from './entities/user.entity';
 
 @Controller()
 @ApiBearerAuth()
@@ -73,5 +75,10 @@ export class UsersController {
         data: response,
       }),
     );
+  }
+
+  @MessagePattern('user/find-by-id')
+  async findAgreementById(@Payload() ids: number[]): Promise<User[]> {
+    return this.usersService.findByIds(ids);
   }
 }

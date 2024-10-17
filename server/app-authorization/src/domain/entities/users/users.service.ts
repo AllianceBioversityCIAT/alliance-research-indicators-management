@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRolesService } from '../user-roles/user-roles.service';
@@ -38,6 +38,15 @@ export class UsersService {
     return this.dataSource.getRepository(User).findOne({
       where: {
         sec_user_id: id,
+        is_active: true,
+      },
+    });
+  }
+
+  async findByIds(ids: number[]): Promise<User[]> {
+    return this.dataSource.getRepository(User).find({
+      where: {
+        sec_user_id: In(ids),
         is_active: true,
       },
     });

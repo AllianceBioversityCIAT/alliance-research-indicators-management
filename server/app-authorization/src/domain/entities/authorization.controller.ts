@@ -16,8 +16,12 @@ import {
 import { SearchRequest } from '../shared/decorators/search-request.decorator';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { ServiceResponseDto } from '../shared/global-dto/service-response.dto';
-import { ResponseAccessTokenDto } from '../shared/global-dto/payload.dto';
+import {
+  ResponseAccessTokenDto,
+  ValidJwtResponse,
+} from '../shared/global-dto/payload.dto';
 import { ResponseUtils } from '../shared/utils/response.utils';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @ApiTags('Authorization')
 @Controller()
@@ -58,5 +62,10 @@ export class AuthorizationController {
           data: response,
         }),
       );
+  }
+
+  @MessagePattern('valid-jwt')
+  async findAgreementById(@Payload() jwt: string): Promise<ValidJwtResponse> {
+    return this.authorizationService.validJwt(jwt);
   }
 }
