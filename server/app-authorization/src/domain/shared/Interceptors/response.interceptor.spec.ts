@@ -24,6 +24,7 @@ describe('ResponseInterceptor', () => {
         status: 200,
       }),
       getResponse: jest.fn().mockReturnValue({ status: jest.fn() }),
+      getType: jest.fn().mockReturnValue('http'),
     };
 
     const callHandlerMock: CallHandler = {
@@ -61,6 +62,7 @@ describe('ResponseInterceptor', () => {
         }),
         getResponse: jest.fn().mockReturnValue({ status: jest.fn() }),
       }),
+      getType: jest.fn().mockReturnValue('http'),
     };
 
     const callHandlerMock: CallHandler = {
@@ -97,6 +99,7 @@ describe('ResponseInterceptor', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
       }),
       getResponse: jest.fn().mockReturnValue({ status: jest.fn() }),
+      getType: jest.fn().mockReturnValue('http'),
     };
 
     const callHandlerMock: CallHandler = {
@@ -133,6 +136,7 @@ describe('ResponseInterceptor', () => {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
       }),
       getResponse: jest.fn().mockReturnValue({ status: jest.fn() }),
+      getType: jest.fn().mockReturnValue('http'),
     };
 
     const callHandlerMock: CallHandler = {

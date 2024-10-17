@@ -24,6 +24,7 @@ describe('ResponseInterceptor', () => {
         status: 200,
       }),
       getResponse: jest.fn().mockReturnValue({ status: jest.fn() }),
+      getType: jest.fn().mockReturnValue('http'),
     };
 
     const callHandlerMock: CallHandler = {

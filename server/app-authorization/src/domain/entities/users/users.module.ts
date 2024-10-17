@@ -8,6 +8,6 @@ import { UserAgressoContractService } from '../../complementary-entities/seconda
   controllers: [UsersController],
   providers: [UsersService, UserAgressoContractService],
   imports: [UserRolesModule],
-  exports: [UsersService],
+  exports: [UsersService, UserAgressoContractService],
 })
 export class UsersModule {}

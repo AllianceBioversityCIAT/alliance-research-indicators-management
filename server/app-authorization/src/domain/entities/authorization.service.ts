@@ -7,6 +7,7 @@ import {
   AccessTokenDto,
   PayloadDto,
   ResponseAccessTokenDto,
+  ValidJwtResponse,
 } from '../shared/global-dto/payload.dto';
 import { RefreshToken } from './refresh-tokens/entities/refresh-token.entity';
 import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
@@ -127,5 +128,27 @@ export class AuthorizationService {
     return token.then(({ user }: RefreshToken) => {
       return new ResponseAccessTokenDto(this.generateToken(user), refreshToken);
     });
+  }
+
+  async validJwt(token: string): Promise<ValidJwtResponse> {
+    const dataResponse: ValidJwtResponse = {
+      isValid: false,
+    };
+    try {
+      const decoded: PayloadDto = this._jwt.verify(token, {
+        secret: env.ARIM_JWT_SECRET,
+      });
+      if (decoded?.id) {
+        dataResponse.isValid = !!decoded?.id;
+        dataResponse.user = {
+          sec_user_id: decoded.id,
+          first_name: decoded.first_name,
+          last_name: decoded.last_name,
+        };
+      }
+      return dataResponse;
+    } catch (error) {
+      return dataResponse;
+    }
   }
 }

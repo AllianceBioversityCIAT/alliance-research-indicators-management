@@ -27,3 +27,8 @@ export class ResponseAccessTokenDto {
     public refresh_token: string,
   ) {}
 }
+
+export class ValidJwtResponse {
+  public isValid: boolean;
+  public user?: Partial<User>;
+}
