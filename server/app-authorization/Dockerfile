@@ -33,7 +33,6 @@ CMD ["npm", "run", "start"]
 FROM base AS build
 RUN npm ci --only=production
 COPY . .
-RUN npm run migration:execute 
 RUN npm run build
 
 #################### PRODUCTION STAGE ####################
