@@ -16,20 +16,21 @@ export const getDataSource = (
   let username: string;
   let password: string;
   let database: string;
-  let entities: string;
+  let entities: string[];
   let name: string;
 
-  if ([dataSourceTarget.CORE, dataSourceTarget.SECONDARY].includes(target)) {
-    host = env.ARIM_MYSQL_HOST;
-    username = env.ARIM_MYSQL_USER_NAME;
-    password = env.ARIM_MYSQL_USER_PASS;
-  }
+  entities = [
+    `${__dirname}/../../../domain/entities/**/*.entity{.ts,.js}`,
+    `${__dirname}/../../../domain/auxiliary/**/*.entity{.ts,.js}`,
+  ];
 
   switch (target) {
     case dataSourceTarget.CORE:
       name = 'default';
+      host = env.ARIM_MYSQL_HOST;
       database = env.ARIM_MYSQL_NAME;
-      entities = `${__dirname}/../../../domain/entities/**/*.entity{.ts,.js}`;
+      username = env.ARIM_MYSQL_USER_NAME;
+      password = env.ARIM_MYSQL_USER_PASS;
       break;
     case dataSourceTarget.TEST:
       name = 'default';
@@ -37,12 +38,6 @@ export const getDataSource = (
       username = env.ARIM_TEST_MYSQL_USER_NAME;
       password = env.ARIM_TEST_MYSQL_USER_PASS;
       database = env.ARIM_TEST_MYSQL_NAME;
-      entities = `${__dirname}/../../../domain/entities/**/*.entity{.ts,.js}`;
-      break;
-    case dataSourceTarget.SECONDARY:
-      name = 'secondary';
-      database = env.ARIM_SECONDARY_MYSQL_NAME;
-      entities = `${__dirname}/../../../domain/complementary-entities/secondary/**/*.entity{.ts,.js}`;
       break;
   }
 
@@ -54,7 +49,7 @@ export const getDataSource = (
     username: username,
     password: password,
     database: database,
-    entities: [entities],
+    entities: entities,
     synchronize: false,
     migrationsRun: false,
     bigNumberStrings: false,
