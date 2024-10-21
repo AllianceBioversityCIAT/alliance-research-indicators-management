@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { User } from './users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -22,6 +22,7 @@ import { env } from 'process';
 import { MessageMicroservice } from '../tools/broker/message.microservice';
 import { EmailBody } from '../tools/broker/dtos/mailer.dto';
 import { UsersService } from './users/users.service';
+import { UserStatusEnum } from './user-status/enum/user-status.enum';
 
 @Injectable()
 export class AuthorizationService {
@@ -37,16 +38,16 @@ export class AuthorizationService {
   login(profileData: CognitoProfileDto): Promise<ResponseAccessTokenDto> {
     const email: string = profileData.email?.trim().toLocaleLowerCase();
     const isCgir: boolean = email.includes('@cgiar.org');
-    const userRepo: Repository<User> = this.dataSource.getRepository(User);
-    const access: Promise<AccessTokenDto> = userRepo
-      .findOne({
-        where: {
-          email: email,
-          is_active: true,
-        },
-      })
+    const access: Promise<AccessTokenDto> = this._usersService
+      .findUserLogin(email)
       .then(async (user: User) => {
         let tempUser: User = user;
+        if (tempUser && tempUser.status_id === UserStatusEnum.PENDING)
+          throw new UnauthorizedException('The user is pending to be accepted');
+        if (tempUser && tempUser.status_id === UserStatusEnum.REJECTED)
+          throw new UnauthorizedException(
+            'The user is rejected please contact the support team',
+          );
         if (!tempUser && isCgir) {
           tempUser = await this._usersService
             .create({
@@ -54,6 +55,7 @@ export class AuthorizationService {
               first_name: profileData.given_name,
               last_name: profileData.family_name,
               role_id: RolesEnum.CONTRIBUTOR,
+              user_status_id: UserStatusEnum.ACCEPTED,
             })
             .then(async (data) => {
               await this._templateService
@@ -78,6 +80,14 @@ export class AuthorizationService {
                 });
               return data;
             });
+        } else if (!tempUser && !isCgir) {
+          await this._usersService.create({
+            email: email,
+            first_name: profileData.given_name,
+            last_name: profileData.family_name,
+            role_id: RolesEnum.CONTRIBUTOR,
+            user_status_id: UserStatusEnum.PENDING,
+          });
         }
 
         if (tempUser) {
@@ -86,7 +96,10 @@ export class AuthorizationService {
             accessToken,
             tempUser,
           );
-          return tokenObj;
+          return {
+            ...tokenObj,
+            user: tempUser,
+          };
         }
 
         throw new UnauthorizedException(
@@ -105,10 +118,13 @@ export class AuthorizationService {
           expires_at: ENV.EXPIRE_DATE,
         })
         .then((refreshToken: RefreshToken) => {
-          return new ResponseAccessTokenDto(
-            access.access_token,
-            refreshToken.refresh_token_code,
-          );
+          return {
+            ...new ResponseAccessTokenDto(
+              access.access_token,
+              refreshToken.refresh_token_code,
+            ),
+            user: access.user,
+          };
         });
     });
   }
@@ -147,7 +163,7 @@ export class AuthorizationService {
         };
       }
       return dataResponse;
-    } catch (error) {
+    } catch (_error) {
       return dataResponse;
     }
   }

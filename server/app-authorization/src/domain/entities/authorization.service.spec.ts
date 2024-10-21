@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthorizationService } from './authorization.service';
 import { CognitoProfileDto } from '../shared/global-dto/cognito-profile.dto';
 import { ConfigModule } from '@nestjs/config';
-import { HttpStatus, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { OrmConfigTestModule } from '../../db/config/mysql/orm-connection-test.module';
 import { AuthorizationModule } from './authorization.module';
 

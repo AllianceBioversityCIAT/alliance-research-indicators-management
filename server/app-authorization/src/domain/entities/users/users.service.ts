@@ -1,18 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { DataSource, In } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DataSource, In, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRolesService } from '../user-roles/user-roles.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserAgressoContractService } from '../../complementary-entities/secondary/user-agresso-contracts/user-agresso-contract.service';
+import { UserStatusEnum } from '../user-status/enum/user-status.enum';
 
 @Injectable()
 export class UsersService {
+  private readonly mainRepo: Repository<User>;
   constructor(
     private readonly dataSource: DataSource,
     private readonly _userRolesService: UserRolesService,
     private readonly _userAgressoContractService: UserAgressoContractService,
-  ) {}
+  ) {
+    this.mainRepo = dataSource.getRepository(User);
+  }
 
   async create(newUser: CreateUserDto): Promise<User> {
     return this.dataSource.transaction(async (manager) => {
@@ -20,6 +24,7 @@ export class UsersService {
         email: newUser.email,
         first_name: newUser.first_name,
         last_name: newUser.last_name,
+        status_id: newUser.user_status_id,
       });
 
       await this._userRolesService._setRoleToUser(
@@ -35,18 +40,77 @@ export class UsersService {
   }
 
   async findById(id: number): Promise<User> {
-    return this.dataSource.getRepository(User).findOne({
+    return this.mainRepo.findOne({
       where: {
         sec_user_id: id,
+        status_id: UserStatusEnum.ACCEPTED,
+        is_active: true,
+      },
+    });
+  }
+
+  async findUserLogin(email: string): Promise<User> {
+    return this.mainRepo.findOne({
+      where: {
+        email: email,
+        status_id: In([UserStatusEnum.ACCEPTED, UserStatusEnum.PENDING]),
+        is_active: true,
+      },
+      relations: {
+        user_role_list: {
+          role: true,
+        },
+      },
+    });
+  }
+
+  async getPendingUsers(): Promise<User[]> {
+    return this.mainRepo.find({
+      where: {
+        status_id: UserStatusEnum.PENDING,
+        is_active: true,
+      },
+    });
+  }
+
+  async updateUserStatus(
+    user_id: number,
+    status_id: UserStatusEnum,
+  ): Promise<User> {
+    return this.mainRepo
+      .findOne({
+        where: {
+          sec_user_id: user_id,
+          is_active: true,
+        },
+      })
+      .then((user) => {
+        if (!user) throw new NotFoundException('User to update not found');
+        this.mainRepo.update(user.sec_user_id, {
+          status_id: status_id,
+        });
+        return { ...user, status_id: status_id };
+      });
+  }
+
+  async findByAttribute<K extends keyof User>(
+    attribute: K,
+    value: User[K],
+  ): Promise<User> {
+    return this.mainRepo.findOne({
+      where: {
+        [attribute]: value,
+        status_id: UserStatusEnum.ACCEPTED,
         is_active: true,
       },
     });
   }
 
   async findByIds(ids: number[]): Promise<User[]> {
-    return this.dataSource.getRepository(User).find({
+    return this.mainRepo.find({
       where: {
         sec_user_id: In(ids),
+        status_id: UserStatusEnum.ACCEPTED,
         is_active: true,
       },
     });
