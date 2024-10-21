@@ -13,7 +13,6 @@ import { UserRolesRepository } from '../user-roles/user-roles.repository';
 
 describe('UsersController (with real DB for tests)', () => {
   let controller: UsersController;
-  let usersService: UsersService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,7 +29,6 @@ describe('UsersController (with real DB for tests)', () => {
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
-    usersService = module.get<UsersService>(UsersService);
   });
 
   it('should create a new user in the test database', async () => {
@@ -39,6 +37,7 @@ describe('UsersController (with real DB for tests)', () => {
       first_name: 'Test',
       last_name: 'User',
       role_id: 1,
+      user_status_id: 1,
     };
 
     const result = await controller.create(createUserDto);

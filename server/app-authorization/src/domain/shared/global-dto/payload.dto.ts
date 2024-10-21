@@ -22,6 +22,7 @@ export class AccessTokenDto {
 }
 
 export class ResponseAccessTokenDto {
+  public user: Partial<User>;
   constructor(
     public access_token: string,
     public refresh_token: string,

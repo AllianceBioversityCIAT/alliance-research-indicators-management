@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RolesEnum } from '../../../shared/enums/roles.enum';
+import { UserStatusEnum } from '../../user-status/enum/user-status.enum';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -9,6 +10,16 @@ export class CreateUserDto {
     default: 'JohnDoe@cgiar.org',
   })
   public email: string;
+
+  @ApiProperty({
+    required: true,
+    description: 'User Status Id',
+    type: Number,
+    enum: UserStatusEnum,
+    default: UserStatusEnum.ACCEPTED,
+  })
+  public user_status_id: UserStatusEnum;
+
   @ApiProperty({
     required: true,
     description: 'User First Name',

@@ -1,7 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
 import { RefreshToken } from '../../refresh-tokens/entities/refresh-token.entity';
 import { UserRole } from '../../user-roles/entities/user-role.entity';
+import { UserStatus } from '../../user-status/entities/user-status.entity';
 
 @Entity('sec_users')
 export class User extends AuditableEntity {
@@ -15,15 +23,17 @@ export class User extends AuditableEntity {
     type: 'varchar',
     name: 'first_name',
     length: 60,
+    nullable: true,
   })
-  first_name: string;
+  first_name?: string;
 
   @Column({
     type: 'varchar',
     name: 'last_name',
     length: 60,
+    nullable: true,
   })
-  last_name: string;
+  last_name?: string;
 
   @Column({
     type: 'varchar',
@@ -31,6 +41,17 @@ export class User extends AuditableEntity {
     length: 150,
   })
   email: string;
+
+  @Column({
+    type: 'bigint',
+    name: 'status_id',
+    nullable: true,
+  })
+  status_id: number;
+
+  @ManyToOne(() => UserStatus, (userStatus) => userStatus.users)
+  @JoinColumn({ name: 'status_id' })
+  status?: UserStatus;
 
   @OneToMany(() => RefreshToken, (rt) => rt.user)
   refresh_tokens: RefreshToken[];

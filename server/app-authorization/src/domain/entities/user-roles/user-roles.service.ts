@@ -1,11 +1,6 @@
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { DataSource, EntityManager } from 'typeorm';
 import { UserRole } from './entities/user-role.entity';
-import { ResponseUtils } from '../../shared/utils/response.utils';
 import { CreateUserRoleDto } from './dto/create-user-role.dto';
 import { UserRoleContractsService } from '../user-role-contracts/user-role-contracts.service';
 import { UserRoleResultsService } from '../user-role-results/user-role-results.service';
@@ -88,17 +83,10 @@ export class UserRolesService {
   }
 
   async findRolesByUserId(user_id: number) {
-    return this.userRolesRepository
-      .findUserRole(user_id, {
-        user_role_contract_list: true,
-        user_role_result_list: true,
-      })
-      .then((roles) =>
-        ResponseUtils.format({
-          description: 'Roles found successfully',
-          status: HttpStatus.OK,
-          data: roles,
-        }),
-      );
+    return this.userRolesRepository.findUserRole(user_id, {
+      user_role_contract_list: true,
+      user_role_result_list: true,
+      is_active: true,
+    });
   }
 }

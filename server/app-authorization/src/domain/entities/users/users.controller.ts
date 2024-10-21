@@ -81,4 +81,18 @@ export class UsersController {
   async findAgreementById(@Payload() ids: number[]): Promise<User[]> {
     return this.usersService.findByIds(ids);
   }
+
+  @Get('pending')
+  @ApiOperation({
+    summary: 'Returns all users who are pending to accept or reject',
+  })
+  async findPendingUser() {
+    return this.usersService.getPendingUsers().then((response) =>
+      ResponseUtils.format({
+        description: 'users successfully found',
+        status: HttpStatus.OK,
+        data: response,
+      }),
+    );
+  }
 }

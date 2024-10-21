@@ -19,6 +19,7 @@ import { UserRoleResultsModule } from './user-role-results/user-role-results.mod
 import { UserRoleContractsModule } from './user-role-contracts/user-role-contracts.module';
 import { MessageMicroservice } from '../tools/broker/message.microservice';
 import { TemplateService } from '../auxiliary/template/template.service';
+import { UserStatusModule } from './user-status/user-status.module';
 
 @Module({
   controllers: [AuthorizationController],
@@ -47,6 +48,7 @@ import { TemplateService } from '../auxiliary/template/template.service';
     RoleEndpointPermissionsModule,
     UserRoleResultsModule,
     UserRoleContractsModule,
+    UserStatusModule,
   ],
   exports: [],
 })
