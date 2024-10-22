@@ -13,14 +13,8 @@ import { RefreshToken } from './refresh-tokens/entities/refresh-token.entity';
 import { RefreshTokensService } from './refresh-tokens/refresh-tokens.service';
 import { ENV } from '../shared/utils/env.utils';
 import { RolesEnum } from '../shared/enums/roles.enum';
-import { TemplateService } from '../auxiliary/template/template.service';
-import {
-  TemplateEnum,
-  WelcomeEmailTemplate,
-} from '../auxiliary/template/enum/template.enum';
 import { env } from 'process';
 import { MessageMicroservice } from '../tools/broker/message.microservice';
-import { EmailBody } from '../tools/broker/dtos/mailer.dto';
 import { UsersService } from './users/users.service';
 import { UserStatusEnum } from './user-status/enum/user-status.enum';
 
@@ -30,7 +24,6 @@ export class AuthorizationService {
     private readonly dataSource: DataSource,
     private readonly _jwt: JwtService,
     private readonly _refreshTokenService: RefreshTokensService,
-    private readonly _templateService: TemplateService,
     private readonly _messageMicroservice: MessageMicroservice,
     private readonly _usersService: UsersService,
   ) {}
@@ -55,39 +48,24 @@ export class AuthorizationService {
               first_name: profileData.given_name,
               last_name: profileData.family_name,
               role_id: RolesEnum.CONTRIBUTOR,
-              user_status_id: UserStatusEnum.ACCEPTED,
             })
             .then(async (data) => {
-              await this._templateService
-                ._getTemplate<WelcomeEmailTemplate>(
-                  TemplateEnum.WELCOME_EMAIL,
-                  {
-                    client_host: env.ARIM_ALLIANCE_CLI_HOST,
-                    first_name: data.first_name,
-                    last_name: data.last_name,
-                  },
-                )
-                .then(async (template: string) => {
-                  const sendEmail: EmailBody = {
-                    message: {
-                      socketFile: Buffer.from(template),
-                    },
-                    subject: 'Welcome to Alliance',
-                    to: data.email,
-                  };
-
-                  await this._messageMicroservice.sendEmail(sendEmail);
-                });
+              await this._messageMicroservice.welcomeEmail(data);
               return data;
             });
         } else if (!tempUser && !isCgir) {
-          await this._usersService.create({
-            email: email,
-            first_name: profileData.given_name,
-            last_name: profileData.family_name,
-            role_id: RolesEnum.CONTRIBUTOR,
-            user_status_id: UserStatusEnum.PENDING,
-          });
+          await this._usersService.create(
+            {
+              email: email,
+              first_name: profileData.given_name,
+              last_name: profileData.family_name,
+            },
+            true,
+          );
+
+          throw new UnauthorizedException(
+            'Your access is restricted until your user is approved. You will be notified by email.',
+          );
         }
 
         if (tempUser) {

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RolesEnum } from '../../../shared/enums/roles.enum';
-import { UserStatusEnum } from '../../user-status/enum/user-status.enum';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -13,20 +12,12 @@ export class CreateUserDto {
 
   @ApiProperty({
     required: true,
-    description: 'User Status Id',
-    type: Number,
-    enum: UserStatusEnum,
-    default: UserStatusEnum.ACCEPTED,
-  })
-  public user_status_id: UserStatusEnum;
-
-  @ApiProperty({
-    required: true,
     description: 'User First Name',
     type: String,
     default: 'John',
   })
   public first_name: string;
+
   @ApiProperty({
     required: true,
     description: 'User Last Name',
@@ -34,6 +25,7 @@ export class CreateUserDto {
     default: 'Doe',
   })
   public last_name: string;
+
   @ApiProperty({
     required: true,
     description: 'User Role Id. Only application roles are allowed',
@@ -41,5 +33,5 @@ export class CreateUserDto {
     type: Number,
     default: 1,
   })
-  public role_id: number;
+  public role_id?: number;
 }
