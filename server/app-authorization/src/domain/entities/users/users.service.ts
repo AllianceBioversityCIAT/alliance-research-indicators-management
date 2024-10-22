@@ -18,22 +18,30 @@ export class UsersService {
     this.mainRepo = dataSource.getRepository(User);
   }
 
-  async create(newUser: CreateUserDto): Promise<User> {
+  async create(
+    newUser: CreateUserDto,
+    isPending: boolean = false,
+  ): Promise<User> {
     return this.dataSource.transaction(async (manager) => {
+      const status_id: UserStatusEnum = isPending
+        ? UserStatusEnum.PENDING
+        : UserStatusEnum.ACCEPTED;
       const resUser: User = await manager.getRepository(User).save({
         email: newUser.email,
         first_name: newUser.first_name,
         last_name: newUser.last_name,
-        status_id: newUser.user_status_id,
+        status_id: status_id,
       });
 
-      await this._userRolesService._setRoleToUser(
-        resUser.sec_user_id,
-        newUser.role_id,
-        manager,
-      );
+      if (!isPending) {
+        await this._userRolesService._setRoleToUser(
+          resUser.sec_user_id,
+          newUser.role_id,
+          manager,
+        );
 
-      await this._userAgressoContractService.automaticLinking(resUser);
+        await this._userAgressoContractService.automaticLinking(resUser);
+      }
 
       return resUser;
     });
@@ -53,7 +61,6 @@ export class UsersService {
     return this.mainRepo.findOne({
       where: {
         email: email,
-        status_id: In([UserStatusEnum.ACCEPTED, UserStatusEnum.PENDING]),
         is_active: true,
       },
       relations: {
@@ -76,6 +83,7 @@ export class UsersService {
   async updateUserStatus(
     user_id: number,
     status_id: UserStatusEnum,
+    role_id: number,
   ): Promise<User> {
     return this.mainRepo
       .findOne({
@@ -84,12 +92,19 @@ export class UsersService {
           is_active: true,
         },
       })
-      .then((user) => {
-        if (!user) throw new NotFoundException('User to update not found');
-        this.mainRepo.update(user.sec_user_id, {
-          status_id: status_id,
+      .then(async (user) => {
+        return this.dataSource.transaction(async (manager) => {
+          if (!user) throw new NotFoundException('User to update not found');
+          manager.withRepository(this.mainRepo).update(user.sec_user_id, {
+            status_id: status_id,
+          });
+          await this._userRolesService._setRoleToUser(
+            user.sec_user_id,
+            role_id,
+            manager,
+          );
+          return { ...user, status_id: status_id };
         });
-        return { ...user, status_id: status_id };
       });
   }
 
