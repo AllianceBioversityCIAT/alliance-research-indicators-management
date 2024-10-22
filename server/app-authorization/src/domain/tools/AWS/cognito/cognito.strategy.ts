@@ -49,16 +49,17 @@ export class CognitoStrategy extends PassportStrategy(Strategy, 'cognito') {
    * token and getting the user's profile data from the AWS Cognito service
    */
   async validate(@Req() req: Request) {
-    const { authorization } = req.headers;
+    const { authorization: authV1, Authorization: authV2 } = req.headers;
+    const authorization = authV1 || authV2;
     if (typeof authorization !== 'string') {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Bearer token is incorrect type');
     }
 
     // Split the authorization header to get the code from the user
     // to be able to get the access token
     const parts = authorization.split(' ');
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Bearer token is missing');
     }
     const code = parts[1];
 
