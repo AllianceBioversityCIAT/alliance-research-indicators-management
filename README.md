@@ -41,3 +41,5 @@ In this project, we utilize Swagger, which is compatible with NestJS, for API do
 By integrating Swagger with NestJS, we automatically generate interactive API documentation that allows developers to explore and test our API endpoints directly from their web browsers. This documentation provides valuable insights into the available endpoints, their expected inputs and outputs, and any additional metadata such as authentication requirements.
 
 Using Swagger with NestJS streamlines the API development process and ensures that our APIs are well-documented, making them easier to understand and consume for both internal and external stakeholders.
+
+## Others
