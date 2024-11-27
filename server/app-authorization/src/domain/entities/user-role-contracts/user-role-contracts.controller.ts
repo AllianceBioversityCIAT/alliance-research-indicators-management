@@ -13,12 +13,13 @@ export class UserRoleContractsController {
   ) {}
 
   @MessagePattern('link-user-contract')
-  async linkUserContract(@Payload() payload: LinkUserRoleContractDto) {
+  async linkUserContract(@Payload() payload: string) {
+    const data: LinkUserRoleContractDto = JSON.parse(payload);
     return this.userRoleContractsService.create({
-      primaryFilterKey: payload.user_id,
+      primaryFilterKey: data.user_id,
       dataToSave: {
-        contract_id: payload.contract_id,
-        role_id: payload.role_id,
+        contract_id: data.contract_id,
+        role_id: data.role_id,
       },
       generalCompareKey: 'contract_id',
       otherAttributes: ['role_id'],
@@ -27,7 +28,8 @@ export class UserRoleContractsController {
   }
 
   @MessagePattern('find-user-contract')
-  async findUserContract(@Payload() payload: FindUserRoleContractDto) {
-    return this.userRoleContractsService.find(payload.user_id, payload.role_id);
+  async findUserContract(@Payload() payload: string) {
+    const data: FindUserRoleContractDto = JSON.parse(payload);
+    return this.userRoleContractsService.find(data.user_id, data.role_id);
   }
 }
