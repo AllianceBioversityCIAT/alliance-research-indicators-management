@@ -28,10 +28,12 @@ import { DataSourceOptions } from 'typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PermissionGuard } from './domain/shared/guards/permission.guard';
 import { AuxiliaryModule } from './domain/auxiliary/auxiliary.module';
+import { GlobalUtilsModule } from './domain/shared/utils/global-utils.module';
 
 @Module({
   imports: [
     JwtModule,
+    GlobalUtilsModule,
     DynamoDBModule.forRoot({
       region: env.ARIM_DYNAMO_REGION,
       credentials: {

@@ -11,6 +11,7 @@ import { RoleFunctionalPermissionsModule } from '../entities/role-functional-per
 import { ElementypesModule } from '../entities/element-types/element-types.module';
 import { ViewConfigurationsModule } from '../entities/view-configurations/view-configurations.module';
 import { RoleEndpointPermissionsModule } from '../entities/role-endpoint-permissions/role-endpoint-permissions.module';
+import { UserRoleContractsModule } from '../entities/user-role-contracts/user-role-contracts.module';
 
 const organizational: Routes = [
   { path: 'entities', module: OrganizationalEntitiesModule },
@@ -27,8 +28,15 @@ const view: Routes = [
   { path: 'element/type', module: ElementypesModule },
 ];
 
+const userRolesChildren: Routes = [
+  {
+    path: 'contracts',
+    module: UserRoleContractsModule,
+  },
+];
+
 const children: Routes = [
-  { path: 'user-roles', module: UserRolesModule },
+  { path: 'user-roles', module: UserRolesModule, children: userRolesChildren },
   { path: 'users', module: UsersModule },
   { path: 'entity-types', module: EntityTypesModule },
   { path: 'organizational', children: organizational },

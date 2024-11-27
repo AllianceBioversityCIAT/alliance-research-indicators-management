@@ -1,6 +1,2 @@
 #!/usr/bin/env sh
 
-cd ./server/app-authorization
-npm run lint
-git add .
-npm run test

@@ -5,8 +5,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserRole } from '../../user-roles/entities/user-role.entity';
 import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
+import { User } from '../../users/entities/user.entity';
+import { Role } from '../../roles/entities/role.entity';
 
 @Entity('sec_user_role_contracts')
 export class UserRoleContract extends AuditableEntity {
@@ -35,10 +36,11 @@ export class UserRoleContract extends AuditableEntity {
   })
   contract_id!: string;
 
-  @ManyToOne(() => UserRole, (user) => user.user_role_contract_list)
-  @JoinColumn([
-    { name: 'user_id', referencedColumnName: 'user_id' },
-    { name: 'role_id', referencedColumnName: 'role_id' },
-  ])
-  user_role: UserRole;
+  @ManyToOne(() => User, (user) => user.user_role_contracts)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @ManyToOne(() => Role, (role) => role.user_role_contracts)
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 }

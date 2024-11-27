@@ -34,11 +34,13 @@ export class UsersService {
       });
 
       if (!isPending) {
-        await this._userRolesService._setRoleToUser(
-          resUser.sec_user_id,
-          newUser.role_id,
+        await this._userRolesService.create({
+          primaryFilterKey: resUser.sec_user_id,
+          dataToSave: { role_id: newUser.role_id },
+          generalCompareKey: 'role_id',
           manager,
-        );
+          onlyCreate: true,
+        });
 
         await this._userAgressoContractService.automaticLinking(resUser);
       }
@@ -53,6 +55,11 @@ export class UsersService {
         sec_user_id: id,
         status_id: UserStatusEnum.ACCEPTED,
         is_active: true,
+      },
+      relations: {
+        user_role_list: {
+          role: true,
+        },
       },
     });
   }
@@ -98,11 +105,13 @@ export class UsersService {
           manager.withRepository(this.mainRepo).update(user.sec_user_id, {
             status_id: status_id,
           });
-          await this._userRolesService._setRoleToUser(
-            user.sec_user_id,
-            role_id,
+          await this._userRolesService.create({
+            primaryFilterKey: user.sec_user_id,
+            dataToSave: { role_id: role_id },
+            generalCompareKey: 'role_id',
             manager,
-          );
+            onlyCreate: true,
+          });
           return { ...user, status_id: status_id };
         });
       });
