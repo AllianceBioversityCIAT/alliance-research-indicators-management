@@ -51,7 +51,7 @@ export class AuthorizationService {
             })
             .then(async (data) => {
               await this._messageMicroservice.welcomeEmail(data);
-              return data;
+              return await this._usersService.findById(data.sec_user_id);
             });
         } else if (!tempUser && !isCgir) {
           await this._usersService.create(

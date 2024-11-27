@@ -10,6 +10,8 @@ import { AuditableEntity } from '../../../shared/global-dto/auditable.entity';
 import { RefreshToken } from '../../refresh-tokens/entities/refresh-token.entity';
 import { UserRole } from '../../user-roles/entities/user-role.entity';
 import { UserStatus } from '../../user-status/entities/user-status.entity';
+import { UserRoleContract } from '../../user-role-contracts/entities/user-role-contract.entity';
+import { UserRoleResult } from '../../user-role-results/entities/user-role-result.entity';
 
 @Entity('sec_users')
 export class User extends AuditableEntity {
@@ -58,4 +60,10 @@ export class User extends AuditableEntity {
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   user_role_list: UserRole[];
+
+  @OneToMany(() => UserRoleContract, (userRole) => userRole.user)
+  user_role_contracts: UserRoleContract[];
+
+  @OneToMany(() => UserRoleResult, (urr) => urr.user)
+  user_role_results: UserRoleResult[];
 }

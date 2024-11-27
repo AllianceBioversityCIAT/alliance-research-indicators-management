@@ -11,6 +11,8 @@ import { RoleFocus } from '../../role-focus/entities/role-focus.entity';
 import { RoleFunctionalPermission } from '../../role-functional-permissions/entities/role-functional-permission.entity';
 import { UserRole } from '../../user-roles/entities/user-role.entity';
 import { RoleEndpointPermission } from '../../role-endpoint-permissions/entities/role-endpoint-permission.entity';
+import { UserRoleContract } from '../../user-role-contracts/entities/user-role-contract.entity';
+import { UserRoleResult } from '../../user-role-results/entities/user-role-result.entity';
 
 @Entity('sec_roles')
 export class Role extends AuditableControlListEntity {
@@ -51,4 +53,13 @@ export class Role extends AuditableControlListEntity {
     (roleEndpointPermission) => roleEndpointPermission.role,
   )
   role_endpoint_permission_list: RoleEndpointPermission[];
+
+  @OneToMany(
+    () => UserRoleContract,
+    (userRoleContract) => userRoleContract.role,
+  )
+  user_role_contracts: UserRoleContract[];
+
+  @OneToMany(() => UserRoleResult, (userRoleResult) => userRoleResult.role)
+  user_role_results: UserRoleResult[];
 }

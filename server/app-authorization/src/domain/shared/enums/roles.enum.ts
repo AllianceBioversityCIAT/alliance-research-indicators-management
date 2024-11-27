@@ -3,4 +3,6 @@ export enum RolesEnum {
   IT_SUPPORT = 2,
   CONTRIBUTOR = 3,
   GLOBAL = 4,
+  CONTRACT_CONTRIBUTOR = 5,
+  RESULT_CONTRIBUTOR = 6,
 }

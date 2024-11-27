@@ -1,12 +1,14 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
+import { RolesFocusEnum } from '../../domain/shared/enums/roles-focus.enum';
+import { RolesEnum } from '../../domain/shared/enums/roles.enum';
 
 export class InsertApplicationRole1719330598358 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `INSERT INTO \`sec_role_focus\` (\`name\`, \`sec_role_focus_id\`) VALUES ('Application', 1)`,
+      `INSERT INTO \`sec_role_focus\` (\`name\`, \`sec_role_focus_id\`) VALUES ('Application', ${RolesFocusEnum.APPLICATION})`,
     );
     await queryRunner.query(
-      `INSERT INTO \`sec_roles\` (\`focus_id\`,\`name\`,\`sec_role_id\`) VALUES (1, 'General Admin', 1), (1, 'IT Support', 2), (1, 'Contributor', 3), (1, 'Global', 4)`,
+      `INSERT INTO \`sec_roles\` (\`focus_id\`,\`name\`,\`sec_role_id\`) VALUES (${RolesFocusEnum.APPLICATION}, 'General Admin',${RolesEnum.GENERAL_ADMIN}), (${RolesFocusEnum.APPLICATION}, 'IT Support', ${RolesEnum.IT_SUPPORT}), (${RolesFocusEnum.APPLICATION}, 'Contributor', ${RolesEnum.CONTRIBUTOR}), (${RolesFocusEnum.APPLICATION}, 'Global', ${RolesEnum.GLOBAL})`,
     );
   }
 
