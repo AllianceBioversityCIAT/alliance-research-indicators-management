@@ -28,8 +28,11 @@ export class UserRoleContractsController {
   }
 
   @MessagePattern('find-user-contract')
-  async findUserContract(@Payload() payload: string) {
-    const data: FindUserRoleContractDto = JSON.parse(payload);
-    return this.userRoleContractsService.find(data.user_id, data.role_id);
+  async findUserContract(@Payload() payload: FindUserRoleContractDto) {
+    return this.userRoleContractsService.custonFind({
+      role_id: payload.role_id,
+      user_id: payload.user_id,
+      is_active: true,
+    });
   }
 }

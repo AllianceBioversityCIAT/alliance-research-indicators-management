@@ -196,7 +196,7 @@ export abstract class BaseServiceSimple<
       ...data,
       ...this.currentUser.audit(SetAutitEnum.BOTH),
     }));
-    console.log(finalDataToSave);
+
     const response = (
       await entityManager.save(finalDataToSave as DeepPartial<Entity>[])
     ).filter((data) => data.is_active === true);
@@ -256,6 +256,12 @@ export abstract class BaseServiceSimple<
       whereData[this.roleKey as any] = dataRole;
     }
 
+    return this.mainRepo.find({
+      where: whereData,
+    });
+  }
+
+  async custonFind(whereData: FindOptionsWhere<Entity>) {
     return this.mainRepo.find({
       where: whereData,
     });
