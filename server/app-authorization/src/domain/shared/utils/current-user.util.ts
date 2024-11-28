@@ -12,7 +12,7 @@ export class CurrentUserUtil {
   }
 
   get user_id(): number {
-    return (this.request['user'] as PayloadDto).id;
+    return (this.request['user'] as PayloadDto)?.id;
   }
 
   public audit(set: SetAutitEnum = SetAutitEnum.NEW): Partial<AuditableEntity> {
