@@ -133,12 +133,9 @@ export class AuthorizationService {
         secret: env.ARIM_JWT_SECRET,
       });
       if (decoded?.id) {
+        const user = await this._usersService.findById(decoded.id);
         dataResponse.isValid = !!decoded?.id;
-        dataResponse.user = {
-          sec_user_id: decoded.id,
-          first_name: decoded.first_name,
-          last_name: decoded.last_name,
-        };
+        dataResponse.user = user;
       }
       return dataResponse;
     } catch (_error) {
