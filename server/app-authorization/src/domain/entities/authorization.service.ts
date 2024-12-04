@@ -17,6 +17,7 @@ import { env } from 'process';
 import { MessageMicroservice } from '../tools/broker/message.microservice';
 import { UsersService } from './users/users.service';
 import { UserStatusEnum } from './user-status/enum/user-status.enum';
+import { isEmpty } from '../shared/utils/object.utils';
 
 @Injectable()
 export class AuthorizationService {
@@ -133,12 +134,9 @@ export class AuthorizationService {
         secret: env.ARIM_JWT_SECRET,
       });
       if (decoded?.id) {
-        dataResponse.isValid = !!decoded?.id;
-        dataResponse.user = {
-          sec_user_id: decoded.id,
-          first_name: decoded.first_name,
-          last_name: decoded.last_name,
-        };
+        const user = await this._usersService.findById(decoded.id);
+        dataResponse.isValid = !isEmpty(user?.sec_user_id);
+        dataResponse.user = user;
       }
       return dataResponse;
     } catch (_error) {
