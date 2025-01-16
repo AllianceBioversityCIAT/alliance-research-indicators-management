@@ -4,6 +4,7 @@ import {
   UseGuards,
   Headers,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -67,5 +68,21 @@ export class AuthorizationController {
   @MessagePattern('valid-jwt')
   async findAgreementById(@Payload() jwt: string): Promise<ValidJwtResponse> {
     return this.authorizationService.validJwt(jwt);
+  }
+
+  @Patch('validate-token')
+  @ApiOperation({ summary: 'Validate the access token' })
+  @ApiHeader({
+    name: 'access-token',
+    required: true,
+  })
+  async validateToken(@Headers('access-token') accessToken: string) {
+    return this.authorizationService.validJwt(accessToken).then((response) =>
+      ResponseUtils.format({
+        status: HttpStatus.OK,
+        description: 'Token is valid',
+        data: response,
+      }),
+    );
   }
 }
