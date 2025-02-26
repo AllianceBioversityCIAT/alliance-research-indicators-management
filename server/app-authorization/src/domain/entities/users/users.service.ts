@@ -6,6 +6,7 @@ import { UserRolesService } from '../user-roles/user-roles.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserAgressoContractService } from '../../complementary-entities/secondary/user-agresso-contracts/user-agresso-contract.service';
 import { UserStatusEnum } from '../user-status/enum/user-status.enum';
+import { CurrentUserUtil } from '../../shared/utils/current-user.util';
 
 @Injectable()
 export class UsersService {
@@ -14,8 +15,27 @@ export class UsersService {
     private readonly dataSource: DataSource,
     private readonly _userRolesService: UserRolesService,
     private readonly _userAgressoContractService: UserAgressoContractService,
+    private readonly _currentUser: CurrentUserUtil,
   ) {
     this.mainRepo = dataSource.getRepository(User);
+  }
+
+  async findCurrentUser() {
+    return this.mainRepo.findOne({
+      where: {
+        sec_user_id: this._currentUser.user_id,
+        status_id: UserStatusEnum.ACCEPTED,
+        is_active: true,
+        user_role_list: {
+          is_active: true,
+        },
+      },
+      relations: {
+        user_role_list: {
+          role: true,
+        },
+      },
+    });
   }
 
   async create(

@@ -81,7 +81,7 @@ export class AppModule implements NestModule {
         method: RequestMethod.ALL,
       },
       {
-        path: 'api/authorization/user/*',
+        path: 'api/authorization/users/*',
         method: RequestMethod.ALL,
       },
       {
