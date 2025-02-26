@@ -49,11 +49,24 @@ export class UsersController {
     RolesEnum.CONTRIBUTOR,
     RolesEnum.GLOBAL,
   )
-  @Get(':id')
+  @Get(':id(\\d+)')
   @ApiOperation({ summary: 'Find user by id' })
   @ApiParam({ name: 'id', type: 'number' })
   findById(@Param('id') id: string) {
     return this.usersService.findById(+id).then((response) =>
+      ResponseUtils.format({
+        status: HttpStatus.OK,
+        description: `User ${response.email} found successfully`,
+        data: response,
+      }),
+    );
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Find current user' })
+  @Get('current')
+  findCurrentUser() {
+    return this.usersService.findCurrentUser().then((response) =>
       ResponseUtils.format({
         status: HttpStatus.OK,
         description: `User ${response.email} found successfully`,
