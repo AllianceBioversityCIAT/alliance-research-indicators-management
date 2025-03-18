@@ -1,0 +1,14 @@
+{
+  "name": "alliance-research-indicators-management",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.0.11"
+  }
+}
