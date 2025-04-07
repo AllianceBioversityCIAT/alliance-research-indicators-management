@@ -5,9 +5,8 @@ export abstract class AuditableEntity {
     type: 'timestamp',
     name: 'created_at',
     nullable: false,
-    select: false,
   })
-  created_at: Date;
+  created_at?: Date;
 
   @Column({
     type: 'bigint',
@@ -15,15 +14,14 @@ export abstract class AuditableEntity {
     nullable: true,
     select: false,
   })
-  created_by: number;
+  created_by?: number;
 
   @UpdateDateColumn({
     type: 'timestamp',
     name: 'updated_at',
     nullable: true,
-    select: false,
   })
-  updated_at: Date;
+  updated_at?: Date;
 
   @Column({
     type: 'bigint',
@@ -31,7 +29,7 @@ export abstract class AuditableEntity {
     nullable: true,
     select: false,
   })
-  updated_by: number;
+  updated_by?: number;
 
   @Column({
     name: 'is_active',
@@ -41,4 +39,12 @@ export abstract class AuditableEntity {
     select: true,
   })
   is_active: boolean;
+
+  @Column({
+    name: 'deleted_at',
+    type: 'timestamp',
+    nullable: true,
+    select: false,
+  })
+  deleted_at?: Date;
 }
