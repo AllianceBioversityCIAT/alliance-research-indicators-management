@@ -51,7 +51,10 @@ export class AuthorizationService {
               role_id: RolesEnum.CONTRIBUTOR,
             })
             .then(async (data) => {
-              await this._messageMicroservice.welcomeEmail(data);
+              /**
+               * Inavailable for now, but in the future we can send a welcome email to the user
+               * await this._messageMicroservice.welcomeEmail(data);
+               */
               return await this._usersService.findById(data.sec_user_id);
             });
         } else if (!tempUser && !isCgir) {
