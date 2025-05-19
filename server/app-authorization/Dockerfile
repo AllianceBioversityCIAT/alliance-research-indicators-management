@@ -8,28 +8,26 @@ WORKDIR /usr/src/app
 # Create non-root user for better security
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
+# Copy dependency files with correct ownership
+COPY --chown=appuser:appgroup package*.json ./
 
 # Install app dependencies
-RUN npm i --ignore-scripts
+RUN npm install --ignore-scripts
 
-# Bundle app source
-COPY src ./src
-COPY tsconfig*.json ./
-COPY nest-cli.json ./
-COPY package*.json ./
-COPY eslint.config.mjs ./
-
-# Creates a "dist" folder with the production build
-RUN npm run build
+# Copy application source and configs with correct ownership
+COPY --chown=appuser:appgroup src ./src
+COPY --chown=appuser:appgroup tsconfig*.json ./
+COPY --chown=appuser:appgroup nest-cli.json ./
+COPY --chown=appuser:appgroup eslint.config.mjs ./
 
 # Switch to non-root user
 USER appuser
+
+# Build the app
+RUN npm run build
 
 # Expose the port on which the app will run
 EXPOSE 3000
 
 # Start the server using the production build
 CMD ["npm", "run", "start"]
-
