@@ -14,10 +14,13 @@ COPY package*.json ./
 FROM base AS development
 
 # Install app dependencies
-RUN npm install
+RUN npm install --ignore-scripts
 
 # Bundle app source
-COPY . .
+COPY src ./src
+COPY tsconfig*.json ./
+COPY nest-cli.json ./
+COPY eslint.config.mjs ./
 
 # Creates a "dist" folder with the production build
 RUN npm run build
