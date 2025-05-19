@@ -24,6 +24,9 @@ COPY eslint.config.mjs ./
 # Creates a "dist" folder with the production build
 RUN npm run build
 
+# Switch to non-root user
+USER appuser
+
 # Expose the port on which the app will run
 EXPOSE 3000
 
