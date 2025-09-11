@@ -37,7 +37,7 @@ export class ViewConfigurationsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all schemas' })
   @Roles(
-    RolesEnum.GENERAL_ADMIN,
+    RolesEnum.SUP_ADMIN,
     RolesEnum.CONTRIBUTOR,
     RolesEnum.IT_SUPPORT,
     RolesEnum.GLOBAL,
@@ -49,7 +49,7 @@ export class ViewConfigurationsController {
 
   @ApiBearerAuth()
   @Post('schema')
-  @Roles(RolesEnum.GENERAL_ADMIN, RolesEnum.IT_SUPPORT)
+  @Roles(RolesEnum.SUP_ADMIN, RolesEnum.IT_SUPPORT)
   @ApiBody({ type: CreateViewConfigurationDto })
   @ApiOperation({ summary: 'Create a schema' })
   createSchema(@Body() schema: CreateViewConfigurationDto) {
@@ -58,7 +58,7 @@ export class ViewConfigurationsController {
 
   @ApiBearerAuth()
   @Patch('schema/:code')
-  @Roles(RolesEnum.GENERAL_ADMIN, RolesEnum.IT_SUPPORT)
+  @Roles(RolesEnum.SUP_ADMIN, RolesEnum.IT_SUPPORT)
   @ApiParam({ name: 'code', type: String })
   @ApiBody({ type: CreateViewConfigurationDto })
   @ApiOperation({ summary: 'Update a schema' })
@@ -70,7 +70,7 @@ export class ViewConfigurationsController {
   }
 
   @ApiBearerAuth()
-  @Roles(RolesEnum.GENERAL_ADMIN, RolesEnum.IT_SUPPORT)
+  @Roles(RolesEnum.SUP_ADMIN, RolesEnum.IT_SUPPORT)
   @Delete('schema/:code')
   @ApiOperation({ summary: 'Delete a schema' })
   deleteSchema(@Param('code') code: string) {
