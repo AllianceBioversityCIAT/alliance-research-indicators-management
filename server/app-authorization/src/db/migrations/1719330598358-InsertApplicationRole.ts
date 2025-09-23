@@ -8,7 +8,7 @@ export class InsertApplicationRole1719330598358 implements MigrationInterface {
       `INSERT INTO \`sec_role_focus\` (\`name\`, \`sec_role_focus_id\`) VALUES ('Application', ${RolesFocusEnum.APPLICATION})`,
     );
     await queryRunner.query(
-      `INSERT INTO \`sec_roles\` (\`focus_id\`,\`name\`,\`sec_role_id\`) VALUES (${RolesFocusEnum.APPLICATION}, 'General Admin',${RolesEnum.GENERAL_ADMIN}), (${RolesFocusEnum.APPLICATION}, 'IT Support', ${RolesEnum.IT_SUPPORT}), (${RolesFocusEnum.APPLICATION}, 'Contributor', ${RolesEnum.CONTRIBUTOR}), (${RolesFocusEnum.APPLICATION}, 'Global', ${RolesEnum.GLOBAL})`,
+      `INSERT INTO \`sec_roles\` (\`focus_id\`,\`name\`,\`sec_role_id\`) VALUES (${RolesFocusEnum.APPLICATION}, 'General Admin',${RolesEnum.SUP_ADMIN}), (${RolesFocusEnum.APPLICATION}, 'IT Support', ${RolesEnum.IT_SUPPORT}), (${RolesFocusEnum.APPLICATION}, 'Contributor', ${RolesEnum.CONTRIBUTOR}), (${RolesFocusEnum.APPLICATION}, 'Global', ${RolesEnum.GLOBAL})`,
     );
   }
 
