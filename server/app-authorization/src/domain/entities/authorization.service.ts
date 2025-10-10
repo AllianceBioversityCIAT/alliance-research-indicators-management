@@ -18,6 +18,7 @@ import { MessageMicroservice } from '../tools/broker/message.microservice';
 import { UsersService } from './users/users.service';
 import { UserStatusEnum } from './user-status/enum/user-status.enum';
 import { isEmpty } from '../shared/utils/object.utils';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthorizationService {
@@ -132,18 +133,88 @@ export class AuthorizationService {
     const dataResponse: ValidJwtResponse = {
       isValid: false,
     };
-    try {
-      const decoded: PayloadDto = this._jwt.verify(token, {
-        secret: env.ARIM_JWT_SECRET,
-      });
-      if (decoded?.id) {
-        const user = await this._usersService.findById(decoded.id);
-        dataResponse.isValid = !isEmpty(user?.sec_user_id);
-        dataResponse.user = user;
+    const tokenType = this.validateTokenType(token);
+
+    console.log('tokenType', tokenType);
+
+    if (tokenType) {
+      const validationResponse = await this.validation(
+        tokenType.client_id,
+        tokenType.client_secret,
+      );
+      return validationResponse;
+    } else {
+      try {
+        const decoded: PayloadDto = this._jwt.verify(token, {
+          secret: env.ARIM_JWT_SECRET,
+        });
+        if (decoded?.id) {
+          const user = await this._usersService.findById(decoded.id);
+          dataResponse.isValid = !isEmpty(user?.sec_user_id);
+          dataResponse.user = user;
+        }
+        return dataResponse;
+      } catch (_error) {
+        return dataResponse;
       }
-      return dataResponse;
-    } catch (_error) {
-      return dataResponse;
+    }
+  }
+
+  async validation(
+    clientId: string,
+    secretKey: string,
+    origin?: string,
+  ): Promise<ValidJwtResponse> {
+    const appSecret = await this._usersService.findAppSecret(clientId);
+
+    if (!appSecret) {
+      return {
+        isValid: false,
+        user: null,
+      };
+    }
+
+    let valid: boolean = bcrypt.compareSync(
+      secretKey,
+      appSecret?.app_secret_key,
+    );
+
+    if (!valid) {
+      return {
+        isValid: false,
+        user: null,
+      };
+    }
+
+    const whitelistHosts = appSecret?.hosts?.length ?? 0;
+
+    if (whitelistHosts > 0 && origin) {
+      const isOriginWhitelisted = appSecret?.hosts?.some(
+        (host) => host === origin,
+      );
+      if (!isOriginWhitelisted) {
+        valid = false;
+      }
+    }
+
+    const user = await this._usersService.findById(
+      appSecret.responsible_user_id,
+    );
+
+    return {
+      isValid: valid,
+      user: user,
+    };
+  }
+
+  private validateTokenType(
+    token: string,
+  ): { client_id: string; client_secret: string } | null {
+    try {
+      const obj = JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
+      return obj?.client_id && obj?.client_secret ? obj : null;
+    } catch {
+      return null;
     }
   }
 }

@@ -59,6 +59,7 @@
     "activedirectory2": "^2.2.0",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.4",
+    "bcrypt": "^6.0.0",
     "cross-replace": "^0.2.0",
     "eslint": "^9.9.1",
     "fast-xml-parser": "^4.4.1",
