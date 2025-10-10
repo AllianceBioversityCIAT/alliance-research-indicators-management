@@ -95,6 +95,10 @@ export class UsersService {
     });
   }
 
+  async findAppSecret(appSecretUuid: string) {
+    return this.mainRepo.findAppSecret(appSecretUuid);
+  }
+
   async updateUserStatus(
     user_id: number,
     status_id: UserStatusEnum,
