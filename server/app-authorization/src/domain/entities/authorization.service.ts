@@ -74,6 +74,12 @@ export class AuthorizationService {
         }
 
         if (tempUser) {
+          await this.dataSource
+            .getRepository(User)
+            .update(
+              { sec_user_id: tempUser.sec_user_id },
+              { last_login_at: new Date() },
+            );
           const accessToken: string = this.generateToken(tempUser);
           const tokenObj: AccessTokenDto = new AccessTokenDto(
             accessToken,
