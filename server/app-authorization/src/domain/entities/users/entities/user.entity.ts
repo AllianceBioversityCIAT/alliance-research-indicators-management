@@ -51,6 +51,13 @@ export class User extends AuditableEntity {
   })
   status_id: number;
 
+  @Column({
+    type: 'timestamp',
+    name: 'last_login_at',
+    nullable: true,
+  })
+  last_login_at?: Date;
+
   @ManyToOne(() => UserStatus, (userStatus) => userStatus.users)
   @JoinColumn({ name: 'status_id' })
   status?: UserStatus;
