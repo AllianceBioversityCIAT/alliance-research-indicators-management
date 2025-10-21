@@ -141,8 +141,6 @@ export class AuthorizationService {
     };
     const tokenType = this.validateTokenType(token);
 
-    console.log('tokenType', tokenType);
-
     if (tokenType) {
       const validationResponse = await this.validation(
         tokenType.client_id,
