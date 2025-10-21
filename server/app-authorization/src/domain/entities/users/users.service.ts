@@ -8,6 +8,7 @@ import { UserAgressoContractService } from '../../complementary-entities/seconda
 import { UserStatusEnum } from '../user-status/enum/user-status.enum';
 import { CurrentUserUtil } from '../../shared/utils/current-user.util';
 import { UserRepository } from './repositories/users.repository';
+import { UserRole } from '../user-roles/entities/user-role.entity';
 
 @Injectable()
 export class UsersService {
@@ -73,17 +74,23 @@ export class UsersService {
   }
 
   async findUserLogin(email: string): Promise<User> {
-    return this.mainRepo.findOne({
+    const activeRoles = await this.dataSource.getRepository(UserRole).find({
       where: {
-        email: email,
         is_active: true,
       },
       relations: {
-        user_role_list: {
-          role: true,
-        },
+        role: true,
       },
     });
+
+    return this.mainRepo
+      .findOne({
+        where: {
+          email: email,
+          is_active: true,
+        },
+      })
+      .then(async (user) => ({ ...user, user_role_list: activeRoles }));
   }
 
   async getPendingUsers(): Promise<User[]> {
