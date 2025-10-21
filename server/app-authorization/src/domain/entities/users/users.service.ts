@@ -74,23 +74,24 @@ export class UsersService {
   }
 
   async findUserLogin(email: string): Promise<User> {
+    const user = await this.mainRepo.findOne({
+      where: {
+        email: email,
+        is_active: true,
+      },
+    });
+
     const activeRoles = await this.dataSource.getRepository(UserRole).find({
       where: {
         is_active: true,
+        user_id: user.sec_user_id,
       },
       relations: {
         role: true,
       },
     });
 
-    return this.mainRepo
-      .findOne({
-        where: {
-          email: email,
-          is_active: true,
-        },
-      })
-      .then(async (user) => ({ ...user, user_role_list: activeRoles }));
+    return { ...user, user_role_list: activeRoles };
   }
 
   async getPendingUsers(): Promise<User[]> {
