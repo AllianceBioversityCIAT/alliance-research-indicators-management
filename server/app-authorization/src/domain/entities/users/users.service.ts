@@ -81,6 +81,8 @@ export class UsersService {
       },
     });
 
+    if (!user) return null;
+
     const activeRoles = await this.dataSource.getRepository(UserRole).find({
       where: {
         is_active: true,
