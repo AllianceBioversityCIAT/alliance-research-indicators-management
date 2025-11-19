@@ -211,6 +211,15 @@ export class AuthorizationService {
     };
   }
 
+  async utilityLogin(userCode: number): Promise<ResponseAccessTokenDto> {
+    const user = await this._usersService.findById(userCode);
+    const userCognito: CognitoProfileDto = new CognitoProfileDto();
+    userCognito.email = user.email;
+    userCognito.given_name = user.first_name;
+    userCognito.family_name = user.last_name;
+    return this.login(userCognito);
+  }
+
   private validateTokenType(
     token: string,
   ): { client_id: string; client_secret: string } | null {

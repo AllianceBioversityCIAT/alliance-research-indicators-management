@@ -5,6 +5,8 @@ import {
   Headers,
   HttpStatus,
   Patch,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,6 +25,9 @@ import {
 } from '../shared/global-dto/payload.dto';
 import { ResponseUtils } from '../shared/utils/response.utils';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { RolesGuard } from '../shared/guards/roles.guard';
+import { Roles } from '../shared/decorators/required-roles.decorator';
+import { RolesEnum } from '../shared/enums/roles.enum';
 
 @ApiTags('Authorization')
 @Controller()
@@ -81,6 +86,21 @@ export class AuthorizationController {
       ResponseUtils.format({
         status: HttpStatus.OK,
         description: 'Token is valid',
+        data: response,
+      }),
+    );
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
+  @Roles(RolesEnum.SUP_ADMIN)
+  @Get('utility-login/:userId')
+  @ApiOperation({ summary: 'Utility login for special access' })
+  async utilityLogin(@Param('userId') userId: string) {
+    return this.authorizationService.utilityLogin(+userId).then((response) =>
+      ResponseUtils.format({
+        status: HttpStatus.OK,
+        description: 'User logged is successfully',
         data: response,
       }),
     );

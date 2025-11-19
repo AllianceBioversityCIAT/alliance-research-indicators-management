@@ -51,7 +51,7 @@ export class JwtMiddleware implements NestMiddleware {
           role: { focus_id: typeRole },
         },
       });
-      req.user.roles = roles;
+      req.user.roles = roles.map((role) => role.role_id);
       next();
     } catch (error) {
       if (error instanceof TokenExpiredError) {
