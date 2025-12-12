@@ -58,6 +58,14 @@ export class User extends AuditableEntity {
   })
   last_login_at?: Date;
 
+  @Column({
+    name: 'carnet',
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+  })
+  carnet?: string;
+
   @ManyToOne(() => UserStatus, (userStatus) => userStatus.users)
   @JoinColumn({ name: 'status_id' })
   status?: UserStatus;
