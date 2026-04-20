@@ -35,6 +35,20 @@ export class Role extends AuditableControlListEntity {
   })
   focus_id: number;
 
+  @Column({
+    name: 'description',
+    type: 'text',
+    nullable: true,
+  })
+  description?: string;
+
+  @Column({
+    name: 'is_internal',
+    type: 'boolean',
+    default: false,
+  })
+  is_internal: boolean;
+
   @ManyToOne(() => RoleFocus, (roleFocus) => roleFocus.sec_role_focus_id)
   @JoinColumn({ name: 'focus_id' })
   focus: RoleFocus;
