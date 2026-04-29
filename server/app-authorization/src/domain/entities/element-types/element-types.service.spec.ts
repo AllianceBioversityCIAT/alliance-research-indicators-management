@@ -1,14 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { DataSource } from 'typeorm';
 import { ElementTypesService } from './element-types.service';
-import { OrmConfigTestModule } from '../../../db/config/mysql/orm-connection-test.module';
-import { ElementypesModule } from './element-types.module';
 
 describe('ComponentTypesService', () => {
   let service: ElementTypesService;
 
+  const mockDataSource = {
+    getRepository: jest.fn().mockReturnValue({
+      find: jest.fn().mockResolvedValue([]),
+    }),
+  };
+
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
-      imports: [OrmConfigTestModule, ElementypesModule],
+      providers: [
+        ElementTypesService,
+        { provide: DataSource, useValue: mockDataSource },
+      ],
     }).compile();
 
     service = module.get<ElementTypesService>(ElementTypesService);

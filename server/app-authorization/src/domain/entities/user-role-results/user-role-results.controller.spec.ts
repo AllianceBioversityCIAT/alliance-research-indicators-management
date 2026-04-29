@@ -1,16 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRoleResultsController } from './user-role-results.controller';
 import { UserRoleResultsService } from './user-role-results.service';
-import { OrmConfigTestModule } from '../../../db/config/mysql/orm-connection-test.module';
 
 describe('UserRoleResultsController', () => {
   let controller: UserRoleResultsController;
 
+  const mockUserRoleResultsService = {};
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserRoleResultsController],
-      providers: [UserRoleResultsService],
-      imports: [OrmConfigTestModule],
+      providers: [
+        {
+          provide: UserRoleResultsService,
+          useValue: mockUserRoleResultsService,
+        },
+      ],
     }).compile();
 
     controller = module.get<UserRoleResultsController>(

@@ -1,22 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRolesService } from './user-roles.service';
-import { OrmConfigTestModule } from '../../../db/config/mysql/orm-connection-test.module';
-import { UserRoleContractsService } from '../user-role-contracts/user-role-contracts.service';
-import { UserRoleResultsService } from '../user-role-results/user-role-results.service';
 import { UserRolesRepository } from './user-roles.repository';
+import { CurrentUserUtil } from '../../shared/utils/current-user.util';
 
 describe('UserRolesService', () => {
   let service: UserRolesService;
+
+  const mockUserRolesRepository = {
+    metadata: {
+      primaryColumns: [{ propertyName: 'sec_user_role_id' }],
+    },
+  } as unknown as UserRolesRepository;
+
+  const mockCurrentUserUtil = {
+    user_id: 1,
+    audit: jest.fn().mockReturnValue({}),
+  } as unknown as CurrentUserUtil;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserRolesService,
-        UserRoleContractsService,
-        UserRoleResultsService,
-        UserRolesRepository,
+        { provide: UserRolesRepository, useValue: mockUserRolesRepository },
+        { provide: CurrentUserUtil, useValue: mockCurrentUserUtil },
       ],
-      imports: [OrmConfigTestModule],
     }).compile();
 
     service = module.get<UserRolesService>(UserRolesService);
