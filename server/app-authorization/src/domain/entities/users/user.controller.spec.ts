@@ -1,66 +1,87 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { UserAgressoContractService } from '../../complementary-entities/secondary/user-agresso-contracts/user-agresso-contract.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { OrmConfigTestModule } from '../../../db/config/mysql/orm-connection-test.module';
-import { UserRolesService } from '../user-roles/user-roles.service';
-import { UserRoleContractsService } from '../user-role-contracts/user-role-contracts.service';
-import { UserRoleResultsService } from '../user-role-results/user-role-results.service';
-import { UserRolesRepository } from '../user-roles/user-roles.repository';
+import { UpdateUserDto } from './dto/update-user.dto';
 
-describe('UsersController (with real DB for tests)', () => {
+describe('UsersController', () => {
   let controller: UsersController;
 
-  beforeAll(async () => {
+  const mockUsersService = {
+    create: jest.fn(),
+    findById: jest.fn(),
+    update: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [
-        UsersService,
-        UserAgressoContractService,
-        UserRolesService,
-        UserRoleContractsService,
-        UserRoleResultsService,
-        UserRolesRepository,
-      ],
-      imports: [OrmConfigTestModule],
+      providers: [{ provide: UsersService, useValue: mockUsersService }],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
   });
 
-  it('should create a new user in the test database', async () => {
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  it('should create a user and return CREATED payload', async () => {
     const createUserDto: CreateUserDto = {
       email: 'test@email.test.com',
       first_name: 'Test',
       last_name: 'User',
       role_id: 1,
-      user_status_id: 1,
     };
+
+    mockUsersService.create.mockResolvedValue({
+      email: 'test@email.test.com',
+      first_name: 'Test',
+      last_name: 'User',
+      sec_user_id: 1,
+    });
 
     const result = await controller.create(createUserDto);
 
+    expect(mockUsersService.create).toHaveBeenCalledWith(createUserDto);
     expect(result.status).toBe(HttpStatus.CREATED);
     expect(result.data.email).toBe('test@email.test.com');
-  }, 10000);
+  });
 
-  it('should find a user by id in the test database', async () => {
+  it('should find a user by id', async () => {
+    mockUsersService.findById.mockResolvedValue({
+      sec_user_id: 1,
+      email: 'test@test.com',
+      first_name: 'Test',
+      last_name: 'User',
+    });
+
     const result = await controller.findById('1');
 
+    expect(mockUsersService.findById).toHaveBeenCalledWith(1);
     expect(result.status).toBe(HttpStatus.OK);
     expect(result.data.email).toBe('test@test.com');
   });
 
-  it('should update a user in the test database', async () => {
+  it('should update a user', async () => {
     const updateUserDto: UpdateUserDto = {
       first_name: 'Updated Name',
       last_name: 'Updated Last Name',
     };
 
+    mockUsersService.update.mockResolvedValue({
+      sec_user_id: 1,
+      email: 'test@test.com',
+      first_name: 'Updated Name',
+      last_name: 'Updated Last Name',
+    });
+
     const result = await controller.update('1', updateUserDto);
 
+    expect(mockUsersService.update).toHaveBeenCalledWith(1, updateUserDto);
     expect(result.status).toBe(HttpStatus.OK);
     expect(result.data.first_name).toBe('Updated Name');
     expect(result.data.last_name).toBe('Updated Last Name');

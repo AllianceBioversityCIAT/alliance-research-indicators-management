@@ -31,7 +31,7 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a user' })
   @Post()
-  @Roles(RolesEnum.SUP_ADMIN)
+  @Roles(RolesEnum.SYSTEM_ADMIN)
   create(@Body() newUser: CreateUserDto) {
     return this.usersService.create(newUser).then((response) =>
       ResponseUtils.format({
@@ -44,7 +44,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @Roles(
-    RolesEnum.SUP_ADMIN,
+    RolesEnum.SYSTEM_ADMIN,
     RolesEnum.IT_SUPPORT,
     RolesEnum.CONTRIBUTOR,
     RolesEnum.GLOBAL,
@@ -77,7 +77,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user by id' })
-  @Roles(RolesEnum.SUP_ADMIN, RolesEnum.IT_SUPPORT)
+  @Roles(RolesEnum.SYSTEM_ADMIN, RolesEnum.IT_SUPPORT)
   @Patch(':id')
   @ApiParam({ name: 'id', type: 'number' })
   update(@Param('id') id: string, @Body() updateUser: UpdateUserDto) {

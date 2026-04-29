@@ -24,7 +24,7 @@ export class RolesGuard implements CanActivate {
     }
 
     // If user is SUP_ADMIN, allow access automatically
-    if (user.roles?.includes(RolesEnum.SUP_ADMIN)) {
+    if (user.roles?.includes(RolesEnum.SYSTEM_ADMIN)) {
       return true;
     }
 

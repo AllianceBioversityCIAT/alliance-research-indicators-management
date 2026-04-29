@@ -1,24 +1,51 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ViewConfigurationsService } from './view-configurations.service';
-import { ConfigModule } from '@nestjs/config';
-import { OrmConfigTestModule } from '../../../db/config/mysql/orm-connection-test.module';
-import { ViewConfigurationsModule } from './view-configurations.module';
 import { NotFoundException } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { ViewConfigurationsService } from './view-configurations.service';
+import { RoleFunctionalPermissionsService } from '../role-functional-permissions/role-functional-permissions.service';
 
 describe('ViewConfigurations', () => {
   let service: ViewConfigurationsService;
+
+  const mapRoleTree = (schema: Record<string, unknown>) => ({
+    client_element_code: schema.client_element_code,
+    roles: {},
+    element_type_id: schema.element_type_id,
+    is_active: schema.is_active,
+    sec_view_configuration_code: schema.sec_view_configuration_code,
+    children: ((schema.children as unknown[]) || []).map((c) =>
+      mapRoleTree(c as Record<string, unknown>),
+    ),
+  });
+
+  const mockRoleFunctionalPermissionsService = {
+    _mapRoleFunctionalPermission: jest.fn((schema) => mapRoleTree(schema)),
+  };
+
+  const mockTreeRepository = {
+    findOne: jest.fn(),
+    findDescendantsTree: jest.fn(),
+    findTrees: jest.fn(),
+  };
+
+  const mockDataSource = {
+    getTreeRepository: jest.fn().mockReturnValue(mockTreeRepository),
+  };
+
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          envFilePath: '.env',
-          isGlobal: true,
-        }),
-        OrmConfigTestModule,
-        ViewConfigurationsModule,
+      providers: [
+        ViewConfigurationsService,
+        { provide: DataSource, useValue: mockDataSource },
+        {
+          provide: RoleFunctionalPermissionsService,
+          useValue: mockRoleFunctionalPermissionsService,
+        },
       ],
-      providers: [],
     }).compile();
+
     service = module.get<ViewConfigurationsService>(ViewConfigurationsService);
   });
 
@@ -26,34 +53,48 @@ describe('ViewConfigurations', () => {
     expect(service).toBeDefined();
   });
 
-  describe('should be return an all schemas', () => {
-    it('should return a view configuration by section', async () => {
+  describe('getSchema', () => {
+    it('should return an empty list when no root trees exist', async () => {
+      mockTreeRepository.findTrees.mockResolvedValue([]);
+
       const result = await service.getSchema();
-      expect(result).toBeDefined();
-      if (result.data.length > 0) {
-        expect(result.data[0].client_element_code).toBeDefined();
-        expect(typeof result.data[0].client_element_code).toBe('string');
-        expect(result.data[0].roles).toBeDefined();
-        expect(typeof result.data[0].roles).toBe('object');
-      }
+
+      expect(result.data).toEqual([]);
+      expect(mockTreeRepository.findTrees).toHaveBeenCalled();
     });
   });
 
-  describe('should be return a view configuration by section', () => {
-    it('should return a view configuration by section', async () => {
-      const code = '92a8a69b-f606-47f8-9d7c-0c087ea3ea63';
-      const result = await service.getSchemaByRootCode(code);
-      expect(result).toBeDefined();
-      expect(result.data.client_element_code).toBeDefined();
-      expect(typeof result.data.client_element_code).toBe('string');
-      expect(result.data.roles).toBeDefined();
+  describe('getSchemaByRootCode', () => {
+    const rootCode = '92a8a69b-f606-47f8-9d7c-0c087ea3ea63';
+
+    it('should return a formatted view configuration when root exists', async () => {
+      const parentNode = {
+        sec_view_configuration_code: rootCode,
+        is_active: true,
+        client_element_code: 'client-element',
+        element_type_id: 1,
+        role_functional_permission_list: [],
+        children: [],
+      };
+
+      mockTreeRepository.findOne.mockResolvedValue(parentNode);
+      mockTreeRepository.findDescendantsTree.mockResolvedValue({
+        ...parentNode,
+        children: [],
+      });
+
+      const result = await service.getSchemaByRootCode(rootCode);
+
+      expect(result.data.client_element_code).toBe('client-element');
       expect(typeof result.data.roles).toBe('object');
     });
 
-    it('should return a error', async () => {
-      const code = 'wrong-code';
-      const result = service.getSchemaByRootCode(code);
-      expect(result).rejects.toThrow(NotFoundException);
+    it('should throw NotFoundException for unknown code', async () => {
+      mockTreeRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.getSchemaByRootCode('wrong-code')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

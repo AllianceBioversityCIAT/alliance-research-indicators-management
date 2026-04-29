@@ -93,7 +93,7 @@ export class AuthorizationController {
 
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
-  @Roles(RolesEnum.SUP_ADMIN)
+  @Roles(RolesEnum.SYSTEM_ADMIN)
   @Get('utility-login/:userId')
   @ApiOperation({ summary: 'Utility login for special access' })
   async utilityLogin(@Param('userId') userId: string) {
