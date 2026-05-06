@@ -30,9 +30,9 @@ export class AuthorizationService {
     private readonly _usersService: UsersService,
   ) {}
 
-  login(profileData: CognitoProfileDto): Promise<ResponseAccessTokenDto> {
+  async login(profileData: CognitoProfileDto): Promise<ResponseAccessTokenDto> {
     const email: string = profileData.email?.trim().toLocaleLowerCase();
-    const isCgir: boolean = email.includes('@cgiar.org');
+    const userStaff = await this._usersService.validateUserStaff(email);
     const access: Promise<AccessTokenDto> = this._usersService
       .findUserLogin(email)
       .then(async (user: User) => {
@@ -43,7 +43,7 @@ export class AuthorizationService {
           throw new UnauthorizedException(
             'The user is rejected please contact the support team',
           );
-        if (!tempUser && isCgir) {
+        if (!tempUser && userStaff) {
           tempUser = await this._usersService
             .create({
               email: email,
@@ -58,7 +58,7 @@ export class AuthorizationService {
                */
               return await this._usersService.findById(data.sec_user_id);
             });
-        } else if (!tempUser && !isCgir) {
+        } else if (!tempUser) {
           await this._usersService.create(
             {
               email: email,
@@ -74,6 +74,8 @@ export class AuthorizationService {
         }
 
         if (tempUser) {
+          await this.validateUserStaff(tempUser, userStaff);
+
           await this.dataSource
             .getRepository(User)
             .update(
@@ -116,6 +118,23 @@ export class AuthorizationService {
           };
         });
     });
+  }
+
+  private async validateUserStaff(user: User, isCiat: boolean): Promise<void> {
+    if (user.status_id !== UserStatusEnum.EXTERNAL_ACCEPTED) {
+      if (!isCiat) {
+        await this.dataSource
+          .getRepository(User)
+          .update(
+            { sec_user_id: user.sec_user_id },
+            { status_id: UserStatusEnum.PENDING },
+          );
+
+        throw new UnauthorizedException(
+          'Your access is restricted until your user is approved. You will be notified by email.',
+        );
+      }
+    }
   }
 
   private generateToken(user: User): string {
