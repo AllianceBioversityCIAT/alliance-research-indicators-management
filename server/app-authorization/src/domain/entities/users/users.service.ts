@@ -38,6 +38,13 @@ export class UsersService {
     });
   }
 
+  async validateUserStaff(email: string): Promise<boolean> {
+    const user = await this.mainRepo.validateUserStaff(email);
+    if (!user) return false;
+
+    return true;
+  }
+
   async create(
     newUser: CreateUserDto,
     isPending: boolean = false,

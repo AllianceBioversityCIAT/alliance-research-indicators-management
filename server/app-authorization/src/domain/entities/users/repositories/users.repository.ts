@@ -57,6 +57,23 @@ export class UserRepository extends Repository<User> {
                   GROUP BY t.app_secret_id`;
     return this.query(query, [appSecretUuid]).then((res) => res?.[0] ?? null);
   }
+
+  async validateUserStaff(
+    email: string,
+  ): Promise<{ email: string; carnet: string } | null> {
+    const query = `
+      SELECT su.email, aus.carnet 
+      FROM sec_users su 
+        INNER JOIN alliance_user_staff aus ON LOWER(TRIM(su.email)) = LOWER(TRIM(aus.email))
+      WHERE aus.carnet IS NOT NULL
+        AND LOWER(TRIM(su.email)) LIKE ?
+        AND su.is_active = TRUE
+        AND aus.is_active = TRUE
+      LIMIT 1
+    `;
+    const result = await this.query(query, [`%${email}%`]);
+    return result?.[0] ?? null;
+  }
 }
 
 export type UserWithHosts = {
