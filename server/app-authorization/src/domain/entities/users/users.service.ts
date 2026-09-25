@@ -18,7 +18,7 @@ export class UsersService {
     private readonly _userAgressoContractService: UserAgressoContractService,
     private readonly _currentUser: CurrentUserUtil,
     private readonly mainRepo: UserRepository,
-  ) {}
+  ) { }
 
   async findCurrentUser() {
     return this.mainRepo.findOne({
@@ -84,7 +84,6 @@ export class UsersService {
     const user = await this.mainRepo.findOne({
       where: {
         email: email,
-        is_active: true,
       },
     });
 

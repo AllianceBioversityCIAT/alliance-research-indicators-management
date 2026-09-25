@@ -62,12 +62,10 @@ export class UserRepository extends Repository<User> {
     email: string,
   ): Promise<{ email: string; carnet: string } | null> {
     const query = `
-      SELECT su.email, aus.carnet 
-      FROM sec_users su 
-        INNER JOIN alliance_user_staff aus ON LOWER(TRIM(su.email)) = LOWER(TRIM(aus.email))
+      SELECT aus.email, aus.carnet 
+      FROM alliance_user_staff aus 
       WHERE aus.carnet IS NOT NULL
-        AND LOWER(TRIM(su.email)) LIKE ?
-        AND su.is_active = TRUE
+        AND LOWER(TRIM(aus.email)) LIKE ?
         AND aus.is_active = TRUE
       LIMIT 1
     `;
