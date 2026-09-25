@@ -28,7 +28,7 @@ export class AuthorizationService {
     private readonly _refreshTokenService: RefreshTokensService,
     private readonly _messageMicroservice: MessageMicroservice,
     private readonly _usersService: UsersService,
-  ) {}
+  ) { }
 
   async login(profileData: CognitoProfileDto): Promise<ResponseAccessTokenDto> {
     const email: string = profileData.email?.trim().toLocaleLowerCase();
@@ -37,6 +37,8 @@ export class AuthorizationService {
       .findUserLogin(email)
       .then(async (user: User) => {
         let tempUser: User = user;
+        if (tempUser && tempUser.is_active === false)
+          throw new UnauthorizedException('The user is disabled please contact the support team');
         if (tempUser && tempUser.status_id === UserStatusEnum.PENDING)
           throw new UnauthorizedException('The user is pending to be accepted');
         if (tempUser && tempUser.status_id === UserStatusEnum.REJECTED)
