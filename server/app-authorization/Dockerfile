@@ -1,5 +1,5 @@
 #################### DEVELOPMENT STAGE ####################
-FROM --platform=linux/amd64 node:20.13.1-alpine AS development
+FROM --platform=linux/amd64 node:22.23.4-alpine AS development
 
 # Create app directory
 WORKDIR /usr/src/app
